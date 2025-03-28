@@ -1,5 +1,15 @@
 #include "game.h"
 
+/**
+ * @brief Creates a Buzz enemy sprite with animation frames and initializes its textures.
+ *
+ * This function defines frame paths for Buzz's animation, allocates
+ * memory for texture pointers. It also initializes the Frames
+ * structure and calls initialize_buzz() for final sprite setup.
+ *
+ * @param renderer SDL_Renderer used for texture creation
+ * @return Sprite Fully initialized Buzz enemy sprite
+ */
 Sprite create_buzz_enemy(SDL_Renderer* renderer) {
     const char* buzz_frame_paths[] = {
         "assets/sprites/enemies/buzz/buzz_1.png",
@@ -24,6 +34,17 @@ Sprite create_buzz_enemy(SDL_Renderer* renderer) {
     return initialize_buzz(renderer, buzz_frames);
 }
 
+/**
+ * @brief Initializes a buzz enemy sprite with specified frames and renderer.
+ *
+ * This function sets up a buzz enemy sprite, assigning its type, dimensions,
+ * position, speed, current frame, and animation frames. It also creates the
+ * texture for the sprite using the provided renderer.
+ *
+ * @param renderer A pointer to the SDL_Renderer used to render the sprite.
+ * @param frames A Frames structure containing the animation frames and related data.
+ * @return A Sprite structure representing the initialized buzz enemy.
+ */
 Sprite initialize_buzz(SDL_Renderer* renderer, Frames frames) {
     Sprite buzz;
     buzz.type = TYPE_ENEMY;
