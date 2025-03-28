@@ -12,6 +12,7 @@
 #include "buzz.h"
 #include "sonic.h"
 #include "events.h"
+#include "audio.h"
 
 #define WINDOW_WIDTH 1000
 #define WINDOW_HEIGHT 800
