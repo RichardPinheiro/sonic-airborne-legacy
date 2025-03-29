@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
+#include "utils.h"
 #include "sprite.h"
 #include "enemy.h"
 #include "buzz.h"
