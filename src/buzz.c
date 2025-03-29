@@ -47,7 +47,7 @@ Sprite create_buzz_enemy(SDL_Renderer* renderer) {
  */
 Sprite initialize_buzz(SDL_Renderer* renderer, Frames frames) {
     Sprite buzz;
-    buzz.type = TYPE_ENEMY;
+    buzz.type = BUZZ;
     buzz.width = BUZZ_WIDTH;
     buzz.height = BUZZ_HEIGHT;
     buzz.x = WINDOW_WIDTH;

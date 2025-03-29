@@ -1,16 +1,57 @@
 #include "game.h"
 
-AudioAsset audio_registry[] = {
+static AudioAsset audio_registry[AUDIO_COUNT];
 
-    { COLLISION_BAT, "assets/sounds/collisions/bat.mp3", NULL, false },
-    { COLLISION_BUZZ_BEE, "assets/sounds/collisions/buzz_and_bee.mp3", NULL, false },
-    { COLLISION_FLAME, "assets/sounds/collisions/flame.mp3", NULL, false },
-    { COLLISION_PARROT, "assets/sounds/collisions/parrot.mp3", NULL, false },
-    { STAGE_1_THEME, "assets/sounds/stages/stage_1.mp3", NULL, true },
-    { STAGE_2_THEME, "assets/sounds/stages/stage_2.mp3", NULL, true },
-    { STAGE_3_THEME, "assets/sounds/stages/stage_3.mp3", NULL, true },
-    { EXTRA_LIFE, "assets/sounds/extra_life.mp3", NULL, false },
-    { GAME_OVER, "assets/sounds/game_over.mp3", NULL, false }
-};
+void audio_initialization(void) {
+    #define AUDIO_ENTRY(id, path, is_music) \
+        if(is_music) { \
+            audio_registry[id].music = Mix_LoadMUS(path); \
+        } else { \
+            audio_registry[id].sound = Mix_LoadWAV(path); \
+        }
+    #include "audio_registry.def"
+    #undef AUDIO_ENTRY
+}
 
-#define AUDIO_REGISTRY_SIZE (sizeof(audio_registry)/sizeof(audio_registry[0]));
+void play_sound(AudioID id) {
+    Mix_PlayChannel(-1, audio_registry[id].sound, 0);
+}
+
+void play_music(AudioID id, bool loop) {
+    Mix_PlayMusic(audio_registry[id].music, loop ? -1 : 0);
+}
+
+void stop_music(void) {
+    Mix_HaltMusic();
+}
+
+void set_volume(int volume) {
+    Mix_Volume(-1, volume);
+}
+
+AudioID get_enemy_collision_sound(SpriteType type) {
+    switch(type) {
+        case BUZZ: return SFX_COLLISION_BUZZ;
+        case BEE: return SFX_COLLISION_BEE;
+        case BAT: return SFX_COLLISION_BAT;
+        case FLAME: return SFX_COLLISION_FLAME;
+        case PARROT: return SFX_COLLISION_PARROT;
+        default: return SFX_COLLISION_BUZZ;
+    }
+}
+
+void audio_cleanup(void) {
+    for(int i = 0; i < AUDIO_COUNT; i++) {
+        if(audio_registry[i].is_music) {
+            if(audio_registry[i].music) {
+                Mix_FreeMusic(audio_registry[i].music);
+                audio_registry[i].music = NULL;
+            }
+        } else {
+            if(audio_registry[i].sound) {
+                Mix_FreeChunk(audio_registry[i].sound);
+                audio_registry[i].sound = NULL;
+            }
+        }
+    }
+}

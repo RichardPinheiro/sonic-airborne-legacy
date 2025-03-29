@@ -4,22 +4,27 @@
 #include "game.h"
 
 typedef enum {
-    COLLISION_BAT,
-    COLLISION_BUZZ_BEE,
-    COLLISION_FLAME,
-    COLLISION_PARROT,
-    STAGE_1_THEME,
-    STAGE_2_THEME,
-    STAGE_3_THEME,
-    EXTRA_LIFE, 
-    GAME_OVER
+    #define AUDIO_ENTRY(id, path, is_music) id,
+    #include "audio_registry.def"
+    #undef AUDIO_ENTRY
+    AUDIO_COUNT
 } AudioID;
 
 typedef struct {
     AudioID id;
-    const char* path;
-    Mix_Chunk* sound;
+    union {
+        Mix_Music* music;
+        Mix_Chunk* sound;
+    };
     bool is_music;
 } AudioAsset;
+
+void audio_initialization(void);
+void play_sound(AudioID id);
+void play_music(AudioID id, bool loop);
+void stop_music(void);
+void set_volume(int volume);
+AudioID get_enemy_collision_sound(SpriteType type);
+void audio_cleanup(void);
 
 #endif

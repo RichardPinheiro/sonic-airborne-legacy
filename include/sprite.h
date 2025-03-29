@@ -14,9 +14,13 @@ typedef struct Frames {
 } Frames;
 
 typedef enum {
-    TYPE_PLAYER,
-    TYPE_ENEMY,
-    TYPE_COIN
+    PLAYER,
+    BUZZ,
+    BEE,
+    BAT,
+    FLAME,
+    PARROT,
+    COIN
 } SpriteType;
 
 typedef enum {

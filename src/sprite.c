@@ -184,8 +184,16 @@ void handle_collisions(Sprite *sonic, Sprite **sprites, int sprites_length) {
         switch (sprite->collision_state) {
             case COLLISION_ENTER:
                 switch (sprite->type) {
-                    case TYPE_ENEMY: handle_enemy_collision(sonic, sprite); break;
-                    case TYPE_COIN: handle_coin_collision(sonic, sprite); break;
+                    case BUZZ:
+                    case BEE:
+                    case BAT:
+                    case FLAME:
+                    case PARROT:
+                        handle_enemy_collision(sonic, sprite);
+                        break;
+                    case COIN:
+                        handle_coin_collision(sonic, sprite);
+                        break;
                 }
                 break;
             case COLLISION_STAY:

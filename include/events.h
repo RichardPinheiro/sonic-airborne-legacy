@@ -20,11 +20,12 @@ typedef enum {
 typedef struct {
     GameEventType type;
     union {
-        struct { Sprite *a; Sprite *b; };
-        struct { int life_delta; int current_life; };
-        struct { char* audio_key; bool loop; };
-        struct { int stage_index; };
-    };
+        struct { Sprite* a; Sprite* b; } collision;
+        struct { int delta; int current; } life;
+        struct { AudioID id; } sfx;
+        struct { AudioID id;  bool loop; } music;
+        struct { int index; } stage;
+    } payload;
 } GameEvent;
 
 typedef struct {
@@ -35,12 +36,13 @@ typedef struct {
 
 extern EventQueue global_queue;
 
-void initialize_event_queue();
+void initialize_event_queue(void);
 void process_events(EventQueue* queue);
 void queue_event(EventQueue* queue, GameEvent event);
 GameEvent dequeue_event(EventQueue* queue);
 bool is_queue_empty(const EventQueue* queue);
-void handle_audio_events(GameEvent event);
+void handle_sfx_events(GameEvent event);
+void handle_music_events(GameEvent event);
 void handle_background_events(GameEvent event);
 void handle_life_events(GameEvent event);
 

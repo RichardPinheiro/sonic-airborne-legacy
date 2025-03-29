@@ -11,10 +11,10 @@
 #include "enemy.h"
 #include "buzz.h"
 #include "sonic.h"
-#include "events.h"
 #include "audio.h"
+#include "events.h"
 
-#define WINDOW_WIDTH 1000
+#define WINDOW_WIDTH 1500
 #define WINDOW_HEIGHT 800
 
 #endif

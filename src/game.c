@@ -2,7 +2,7 @@
 
 EventQueue global_queue;
 
-int main() {
+int main(void) {
     initialize_event_queue();
     srand(time(NULL)); // Seed the random generator 
 
@@ -15,6 +15,14 @@ int main() {
     // Initialize SDL_image for PNG support
     if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
         printf("SDL_image initialization failed: %s\n", IMG_GetError());
+        SDL_Quit();
+        return 1;
+    }
+
+    // Initialize SDL_mixer for sound support
+    if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        printf("SDL_mixer initialization failed: %s\n", Mix_GetError());
+        IMG_Quit();
         SDL_Quit();
         return 1;
     }
@@ -45,7 +53,7 @@ int main() {
     }
 
     // Load background image
-    SDL_Texture* background = IMG_LoadTexture(renderer, "assets/backgrounds/stage3_bg.png");
+    SDL_Texture* background = IMG_LoadTexture(renderer, "assets/backgrounds/stage2_bg.png");
     if (!background) {
         printf("Background loading failed: %s\n", IMG_GetError());
         SDL_DestroyRenderer(renderer);
@@ -55,17 +63,14 @@ int main() {
         return 1;
     }
 
-    // Initialize sonic
     Sprite sonic = create_sonic(renderer);
-
-    // Initialize buzz enemy
     Sprite buzz = create_buzz_enemy(renderer);
-
     Sprite *sprites[] = {
         &buzz
     };
-
     int sprites_length = sizeof(sprites) / sizeof(sprites[0]);
+
+    audio_initialization();
 
     // Game loop variables
     bool quit = false;
@@ -117,6 +122,9 @@ int main() {
     free_sprite_frames(&buzz);
     free_sprite_frames(&sonic);
     SDL_DestroyTexture(background);
+    audio_cleanup();
+    Mix_CloseAudio();
+    Mix_Quit();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     IMG_Quit();

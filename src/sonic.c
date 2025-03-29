@@ -49,7 +49,7 @@ Sprite create_sonic(SDL_Renderer* renderer) {
  */
 Sprite initialize_sonic(SDL_Renderer* renderer, Frames frames) {
     Sprite sonic;
-    sonic.type = TYPE_PLAYER;
+    sonic.type = PLAYER;
     sonic.life = SONIC_MAX_LIFE;
     sonic.x = 0;
     sonic.y = (WINDOW_HEIGHT - SONIC_HEIGHT) / 2;
@@ -187,22 +187,20 @@ void check_boundary(Sprite *sonic) {
 }
 
 void handle_enemy_collision(Sprite* sonic, Sprite* enemy) {
-    printf("handle_enemy_collision \n");
     GameEvent life_event = {
         .type = EVENT_LIFE_CHANGED,
-        .life_delta = -1,
-        .current_life = sonic->life
+        .payload.life.delta = -1,
+        .payload.life.current = sonic->life
     };
     queue_event(&global_queue, life_event);
 
-    // GameEvent sound_event = {
-    //     .type = EVENT_SOUND_EFFECT,
-    //     .audio_key = "damage_sfx"
-    // };
-    // queue_event(&global_queue, sound_event);
+    GameEvent sfx_event = {
+        .type = EVENT_SOUND_EFFECT,
+        .payload.sfx.id = get_enemy_collision_sound(enemy->type) 
+    };
+    queue_event(&global_queue, sfx_event);
 }
 
 void handle_coin_collision(Sprite *sonic, Sprite *coin) {
     printf("handle_coin_collision \n");
 }
-
