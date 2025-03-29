@@ -16,6 +16,15 @@ void process_events(EventQueue* queue) {
     }
 }
 
+/**
+ * @brief Adds an event to the event queue if there is space available.
+ *
+ * This function places a new event into the event queue, advancing the head
+ * of the queue. If the queue is full, the event is not added.
+ *
+ * @param queue A pointer to the EventQueue where the event will be added.
+ * @param event The GameEvent to be added to the queue.
+ */
 void queue_event(EventQueue* queue, GameEvent event) {
     if((queue->head + 1) % MAX_EVENTS != queue->tail) {
         queue->events[queue->head] = event;
@@ -23,6 +32,15 @@ void queue_event(EventQueue* queue, GameEvent event) {
     }
 }
 
+/**
+ * @brief Removes and returns the next event from the event queue.
+ *
+ * This function retrieves the event at the front of the queue and advances
+ * the tail of the queue. If the queue is empty, it returns a default event.
+ *
+ * @param queue A pointer to the EventQueue from which the event will be dequeued.
+ * @return The GameEvent at the front of the queue, or a default event if the queue is empty.
+ */
 GameEvent dequeue_event(EventQueue* queue) {
     if(is_queue_empty(queue)) return (GameEvent){0};
     GameEvent event = queue->events[queue->tail];
