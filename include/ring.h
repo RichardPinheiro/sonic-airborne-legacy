@@ -10,7 +10,6 @@
 #define RING_CURRENT_FRAME 1
 #define RING_DELTA 1
 
-
 Sprite create_ring(SDL_Renderer* renderer);
 Sprite initialize_ring(SDL_Renderer* renderer, Frames frames);
 

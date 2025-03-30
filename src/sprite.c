@@ -200,8 +200,8 @@ void handle_collisions(Sprite *sonic, Sprite **sprites, size_t sprites_length) {
 
 void handle_collision_enter(Sprite *sprite, Sprite *sonic) {
     switch (sprite->effects.effect_type) {
-        case EFFECT_DAMAGE: apply_penalties(sprite, sonic); break;
-        case EFFECT_RING: apply_bonus(sprite, sonic); break;
+        case DAMAGE_EFFECT: apply_penalties(sprite, sonic); break;
+        case RING_EFFECT: apply_bonus(sprite, sonic); break;
     }
 }
 

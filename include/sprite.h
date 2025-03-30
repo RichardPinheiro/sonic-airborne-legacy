@@ -20,7 +20,8 @@ typedef enum {
     BAT,
     FLAME,
     PARROT,
-    RING
+    RING,
+    LIFE
 } SpriteType;
 
 typedef enum {
@@ -31,10 +32,10 @@ typedef enum {
 } CollisionState;
 
 typedef enum {
-    EFFECT_DAMAGE,
-    EFFECT_HEALING,
-    EFFECT_SCORE,
-    EFFECT_RING
+    DAMAGE_EFFECT,
+    LIFE_EFFECT,
+    SCORE_EFFECT,
+    RING_EFFECT
 } EffectType;
 
 typedef struct {
