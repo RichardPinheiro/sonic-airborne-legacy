@@ -10,6 +10,7 @@ void process_events(EventQueue* queue) {
         GameEvent event = dequeue_event(queue);
         switch(event.type) {
             case EVENT_LIFE_CHANGED: handle_life_events(event); break;
+            case EVENT_RINGS_CHANGED: handle_rings_events(event); break;
             case EVENT_SOUND_EFFECT: handle_sfx_events(event); break;
             case EVENT_MUSIC_PLAY: handle_music_events(event); break;
             case EVENT_GAME_OVER: handle_game_over_events(event); break;
@@ -60,6 +61,7 @@ void handle_sfx_events(GameEvent event) {
         case SFX_COLLISION_BAT:
         case SFX_COLLISION_FLAME:
         case SFX_COLLISION_PARROT:
+        case SFX_COLLISION_RING:
         case SFX_EXTRA_LIFE:
             play_sound(event.payload.sfx.id);
             break;
@@ -95,6 +97,12 @@ void handle_life_events(GameEvent event) {
         emit_game_over();
         emit_music(MUSIC_GAME_OVER, false);
     }
+}
+
+void handle_rings_events(GameEvent event) {
+    Sprite* source = event.payload.collision.source;
+    Sprite* target = event.payload.collision.target;
+    target->rings = MAX(target->rings + source->effect_delta, 0);
 }
 
 void handle_game_over_events(GameEvent event) {

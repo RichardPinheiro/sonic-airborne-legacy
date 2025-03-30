@@ -7,6 +7,8 @@
 
 typedef enum {
     EVENT_LIFE_CHANGED,
+    EVENT_SCORE_CHANGED,
+    EVENT_RINGS_CHANGED,
     EVENT_STAGE_CHANGED,
     EVENT_MUSIC_PLAY,
     EVENT_SOUND_EFFECT,
@@ -42,6 +44,7 @@ void handle_sfx_events(GameEvent event);
 void handle_music_events(GameEvent event);
 void handle_background_events(GameEvent event);
 void handle_life_events(GameEvent event);
+void handle_rings_events(GameEvent event);
 void handle_game_over_events(GameEvent event);
 
 #endif

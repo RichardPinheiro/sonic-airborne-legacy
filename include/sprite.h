@@ -33,13 +33,15 @@ typedef enum {
 typedef enum {
     EFFECT_DAMAGE,
     EFFECT_HEALING,
-    EFFECT_SCORE
+    EFFECT_SCORE,
+    EFFECT_RINGS
 } EffectType;
 
 typedef struct Sprite {
     float x, y;
     int width, height;
     int life;
+    int rings;
     float speed;
     float velocity_x, velocity_y;
     float acceleration, friction;
@@ -68,7 +70,8 @@ bool check_collision(Sprite *sprite_a, Sprite *sprite_b);
 void update_sprite_boundaries(Sprite *sprite);
 void update_collision_states(Sprite *sonic, Sprite **sprites, size_t sprites_length);
 void handle_collisions(Sprite *sonic, Sprite **sprites, size_t sprites_length);
-void apply_damage(Sprite* sonic, Sprite* enemy);
-void apply_score(Sprite* sonic, Sprite* ring);
+void handle_collision_enter(Sprite *sprite, Sprite *sonic);
+void handle_collision_stay(Sprite *sprite, Sprite *sonic);
+void handle_collision_exit(Sprite *sprite, Sprite *sonic);
 
 #endif

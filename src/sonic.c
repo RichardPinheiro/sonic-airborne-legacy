@@ -50,7 +50,8 @@ Sprite create_sonic(SDL_Renderer* renderer) {
 Sprite initialize_sonic(SDL_Renderer* renderer, Frames frames) {
     Sprite sonic;
     sonic.type = PLAYER;
-    sonic.life = SONIC_MAX_LIFE;
+    sonic.life = SONIC_LIFE;
+    sonic.rings = SONIC_RINGS;
     sonic.x = 0;
     sonic.y = (WINDOW_HEIGHT - SONIC_HEIGHT) / 2;
     sonic.width = SONIC_WIDTH;
@@ -185,4 +186,14 @@ void update_position(Sprite *sonic, float time_scale_factor) {
 void check_boundary(Sprite *sonic) {
     sonic->x = fmaxf(0, fminf(sonic->x, WINDOW_WIDTH - sonic->width));
     sonic->y = fmaxf(0, fminf(sonic->y, WINDOW_HEIGHT - sonic->height));
+}
+
+void apply_damage_to_player(Sprite* enemy, Sprite* sonic) {
+    emit_life_change(enemy, sonic);
+    emit_sfx(get_collision_sound(enemy->type));
+}
+
+void apply_rings_to_player(Sprite *ring, Sprite *sonic) {
+    emit_rings_change(ring, sonic);
+    emit_sfx(get_collision_sound(ring->type));
 }

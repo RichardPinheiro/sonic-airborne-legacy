@@ -191,32 +191,26 @@ void handle_collisions(Sprite *sonic, Sprite **sprites, size_t sprites_length) {
     for (size_t i = 0; i < sprites_length; i++) {
         Sprite *sprite = sprites[i];
         switch (sprite->collision_state) {
-            case COLLISION_ENTER:
-                switch (sprite->effect_type) {
-                    case EFFECT_DAMAGE:
-                        apply_damage(sonic, sprite);
-                        break;
-                    case EFFECT_SCORE:
-                        apply_score(sonic, sprite);
-                        break;
-                }
-                break;
-            case COLLISION_STAY:
-                // Optional: Ongoing effects (e.g., damage over time)
-                break;
-            case COLLISION_EXIT:
-                sprite->collision_state = COLLISION_NONE;
-                break;
-            default: break;
+            case COLLISION_ENTER: handle_collision_enter(sprite, sonic); break;
+            case COLLISION_STAY: handle_collision_stay(sprite, sonic); break;
+            case COLLISION_EXIT: handle_collision_exit(sprite, sonic); break;
         }
     }
 }
 
-void apply_damage(Sprite* sonic, Sprite* enemy) {
-    emit_sfx(get_enemy_collision_sound(enemy->type));
-    emit_life_change(enemy, sonic);
+void handle_collision_enter(Sprite *sprite, Sprite *sonic) {
+    switch (sprite->effect_type) {
+        case EFFECT_DAMAGE: apply_damage_to_player(sprite, sonic); break;
+        case EFFECT_RINGS: apply_rings_to_player(sprite, sonic); break;
+    }
 }
 
-void apply_score(Sprite *sonic, Sprite *ring) {
-    printf("apply_score \n");
+void handle_collision_stay(Sprite *sprite, Sprite *sonic) {
+    // printf("Optional: Ongoing effects (e.g., damage over time) %d:%d\n",
+    //     sprite->collision_state, sonic->collision_state);
+}
+
+void handle_collision_exit(Sprite *sprite, Sprite *sonic) {
+    sprite->collision_state = COLLISION_NONE;
+    sonic->collision_state = COLLISION_NONE;
 }

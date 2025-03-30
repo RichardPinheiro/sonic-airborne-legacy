@@ -29,18 +29,22 @@ void set_volume(int volume) {
     Mix_Volume(-1, volume);
 }
 
-AudioID get_enemy_collision_sound(SpriteType type) {
+AudioID get_collision_sound(SpriteType type) {
     switch(type) {
         case BUZZ: return SFX_COLLISION_BUZZ;
         case BEE: return SFX_COLLISION_BEE;
         case BAT: return SFX_COLLISION_BAT;
         case FLAME: return SFX_COLLISION_FLAME;
         case PARROT: return SFX_COLLISION_PARROT;
+        case RING: return SFX_COLLISION_RING;
         default: return SFX_COLLISION_BUZZ;
     }
 }
 
 void audio_cleanup(void) {
+    Mix_HaltChannel(-1); //Stop all sound effects immediately -1 = all channels
+    Mix_HaltMusic();     // Stop music playback
+    // Free memory
     for(int i = 0; i < AUDIO_COUNT; i++) {
         if(audio_registry[i].is_music) {
             if(audio_registry[i].music) {

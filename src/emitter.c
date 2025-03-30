@@ -10,6 +10,16 @@ EmitterResult emit_life_change(Sprite* source, Sprite* target) {
     return EMITTER_SUCCESS;
 }
 
+EmitterResult emit_rings_change(Sprite* source, Sprite* target) {
+    GameEvent rings_event = {
+        .type = EVENT_RINGS_CHANGED,
+        .payload.collision.source = source,
+        .payload.collision.target = target
+    };
+    emit_event(rings_event);
+    return EMITTER_SUCCESS;
+}
+
 EmitterResult emit_sfx(AudioID sfx_id) {
     GameEvent sfx_event = {
         .type = EVENT_SOUND_EFFECT,
@@ -39,6 +49,6 @@ EmitterResult emit_game_over(void) {
     return EMITTER_SUCCESS;
 }
 
-void emit_event(const GameEvent event) {
+void emit_event(GameEvent event) {
     queue_event(&global_queue, event);
 }
