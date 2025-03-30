@@ -74,9 +74,11 @@ int main(void) {
 
     Sprite sonic = create_sonic(renderer);
     Sprite ring = create_ring(renderer);
+    Sprite life = create_life(renderer);
     Sprite buzz = create_buzz_enemy(renderer);
     Sprite *sprites[] = {
         &ring,
+        &life,
         &buzz
     };
     size_t sprites_length = sizeof(sprites) / sizeof(sprites[0]);
@@ -110,10 +112,12 @@ int main(void) {
         const Uint8 *keystates = SDL_GetKeyboardState(NULL);
         sonic_motion(&sonic, delta_time, keystates);
         sprite_motion(&ring, delta_time);
+        sprite_motion(&life, delta_time);
         sprite_motion(&buzz, delta_time);
 
         sprite_animation(&sonic, delta_time);
         sprite_animation(&ring, delta_time);
+        sprite_animation(&life, delta_time);
         sprite_animation(&buzz, delta_time);
 
         update_collision_states(&sonic, sprites, sprites_length);
@@ -126,6 +130,7 @@ int main(void) {
 
         sprite_render(&sonic, renderer);
         sprite_render(&ring, renderer);
+        sprite_render(&life, renderer);
         sprite_render(&buzz, renderer);
 
         SDL_RenderPresent(renderer); // Update the display
@@ -135,6 +140,7 @@ int main(void) {
     // Clean up
     free_sprite_frames(&sonic);
     free_sprite_frames(&ring);
+    free_sprite_frames(&life);
     free_sprite_frames(&buzz);
     SDL_DestroyTexture(background);
     audio_cleanup();
