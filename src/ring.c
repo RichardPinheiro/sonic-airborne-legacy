@@ -19,7 +19,7 @@ Sprite create_ring(SDL_Renderer* renderer) {
         "assets/sprites/ring/ring_4.png"
     };
 
-    int frames_length = sizeof(ring_frame_paths) / sizeof(ring_frame_paths[0]);
+    size_t frames_length = sizeof(ring_frame_paths) / sizeof(ring_frame_paths[0]);
 
     SDL_Texture** ring_texture = malloc(sizeof(SDL_Texture*) * frames_length);
     if (!ring_texture) {
@@ -62,6 +62,7 @@ Sprite initialize_ring(SDL_Renderer* renderer, Frames frames) {
     ring.y = set_random_position(&ring);
     ring.speed = RING_SPEED;
     ring.current_frame = RING_CURRENT_FRAME;
+    ring.collision_state = COLLISION_NONE;
     ring.animation_accumulator = 0;
     ring.frames = frames;
     create_texture(renderer, &ring);

@@ -4,7 +4,7 @@ EventQueue global_queue;
 
 int main(void) {
     initialize_event_queue();
-    srand(time(NULL)); // Seed the random generator 
+    srand((unsigned int)time(NULL)); // Seed the random generator 
 
     // Initialize SDL with video and image support
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -75,11 +75,11 @@ int main(void) {
     Sprite sonic = create_sonic(renderer);
     Sprite ring = create_ring(renderer);
     Sprite buzz = create_buzz_enemy(renderer);
-    Sprite **sprites[] = {
+    Sprite *sprites[] = {
         &ring,
         &buzz
     };
-    int sprites_length = sizeof(sprites) / sizeof(sprites[0]);
+    size_t sprites_length = sizeof(sprites) / sizeof(sprites[0]);
 
     audio_initialization();
 

@@ -9,9 +9,9 @@
 #include <time.h>
 #include "utils.h"
 #include "sprite.h"
-#include "enemy.h"
 #include "buzz.h"
 #include "sonic.h"
+#include "ring.h"
 #include "audio.h"
 #include "events.h"
 #include "emitter.h"

@@ -2,8 +2,16 @@
 #  Compiler Configuration
 # =====================
 CC = gcc
-CFLAGS = -std=c11 -Wall -Wextra -pedantic -g \
+CFLAGS = -std=c11 \
+         -Wall -Wextra -Wpedantic \
+         -Wno-error \
+         -Wshadow \
+         -Wuninitialized \
+         $(if $(filter GCC,$(shell $(CC) -dumpmachine)),-Wmaybe-uninitialized,) \
+         -Wconversion \
+         -Wformat=2 \
          -fsanitize=address -fno-omit-frame-pointer \
+         -g \
          -Iinclude \
          $(shell pkg-config --cflags sdl2 SDL2_image SDL2_mixer)
 LDFLAGS = $(shell pkg-config --libs sdl2 SDL2_image SDL2_mixer) \

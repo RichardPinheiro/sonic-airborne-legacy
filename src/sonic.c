@@ -18,7 +18,7 @@ Sprite create_sonic(SDL_Renderer* renderer) {
         "assets/sprites/sonic/sonic_4.png"
     };
 
-    int frames_length = sizeof(sonic_frame_paths) / sizeof(sonic_frame_paths[0]);
+    size_t frames_length = sizeof(sonic_frame_paths) / sizeof(sonic_frame_paths[0]);
 
     SDL_Texture** sonic_texture = malloc(sizeof(SDL_Texture*) * frames_length);
     if (!sonic_texture) {
@@ -57,6 +57,7 @@ Sprite initialize_sonic(SDL_Renderer* renderer, Frames frames) {
     sonic.height = SONIC_HEIGHT;
     sonic.speed = SONIC_SPEED;
     sonic.current_frame = SONIC_CURRENT_FRAME;
+    sonic.collision_state = COLLISION_NONE;
     sonic.hover_amplitude = 1.5f;
     sonic.hover_frequency = 0.006f;
     sonic.hover_start_time = SDL_GetTicks();
@@ -121,7 +122,7 @@ void watch_player_interactions(Sprite *sonic, const Uint8 *keystates) {
 void apply_hover_effect(Sprite *sonic) {
     Uint32 current_time = SDL_GetTicks();
     Uint32 elapsed_time = current_time - sonic->hover_start_time;
-    float oscillation = sin(elapsed_time * sonic->hover_frequency) * sonic->hover_amplitude;
+    float oscillation = sinf(elapsed_time * sonic->hover_frequency) * sonic->hover_amplitude;
     sonic->y += oscillation;
 }
 
@@ -153,7 +154,7 @@ bool is_arrow_pressed(const Uint8 *keystates) {
  * @param time_scale_factor Frame-rate scaling factor.
  */
 void apply_friction(Sprite *sonic, float time_scale_factor) {
-    float friction_factor = pow(sonic->friction, time_scale_factor);
+    float friction_factor = powf(sonic->friction, time_scale_factor);
     sonic->velocity_x *= friction_factor;
     sonic->velocity_y *= friction_factor;
 }
@@ -182,15 +183,6 @@ void update_position(Sprite *sonic, float time_scale_factor) {
  * @param sprite Sprite to clamp (modifies `x` and `y`).
  */
 void check_boundary(Sprite *sonic) {
-    sonic->x = fmax(0, fmin(sonic->x, WINDOW_WIDTH - sonic->width));
-    sonic->y = fmax(0, fmin(sonic->y, WINDOW_HEIGHT - sonic->height));
-}
-
-void handle_enemy_collision(Sprite* sonic, Sprite* enemy) {
-    emit_sfx(get_enemy_collision_sound(enemy->type));
-    emit_life_change(enemy, sonic);
-}
-
-void handle_coin_collision(Sprite *sonic, Sprite *coin) {
-    printf("handle_coin_collision \n");
+    sonic->x = fmaxf(0, fminf(sonic->x, WINDOW_WIDTH - sonic->width));
+    sonic->y = fmaxf(0, fminf(sonic->y, WINDOW_HEIGHT - sonic->height));
 }

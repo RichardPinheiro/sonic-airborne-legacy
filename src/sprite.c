@@ -11,7 +11,7 @@
  * @param sprite Pointer to Sprite struct containing frame path data
  */
 void create_texture(SDL_Renderer* renderer, Sprite *sprite) {
-    for (int i = 0; i < sprite->frames.length; i++) {
+    for (size_t i = 0; i < sprite->frames.length; i++) {
         sprite->frames.texture[i] = IMG_LoadTexture(renderer, sprite->frames.paths[i]);
         if (!sprite->frames.texture[i]) {
             printf("Failed to load texture '%s': %s\n", sprite->frames.paths[i], IMG_GetError());
@@ -36,6 +36,15 @@ void sprite_animation(Sprite *sprite, Uint32 delta_time) {
         sprite->current_frame = (sprite->current_frame + 1) % sprite->frames.length;
         sprite->animation_accumulator -= sprite->frames.delay;
     }
+}
+
+void sprite_motion(Sprite *sprite, Uint32 delta_time) {
+    sprite->x += sprite->speed * get_time_scale_factor(delta_time);
+    if (sprite->x + sprite->width < 0) {
+        sprite->x = WINDOW_WIDTH + sprite->width;
+        sprite->y = set_random_position(sprite);
+    }
+    update_sprite_boundaries(sprite);
 }
 
 /**
@@ -82,7 +91,7 @@ int set_random_position(Sprite *sprite) {
  */
 void free_sprite_frames(Sprite *sprite) {
     if (sprite->frames.texture) {
-        for (int i = 0; i < sprite->frames.length; i++)
+        for (size_t i = 0; i < sprite->frames.length; i++)
             if (sprite->frames.texture[i]) SDL_DestroyTexture(sprite->frames.texture[i]);
         free(sprite->frames.texture);
         sprite->frames.texture = NULL;
@@ -149,8 +158,8 @@ void update_sprite_boundaries(Sprite *sprite) {
  * @param sprites Array of pointers to the sprites to be checked for collisions.
  * @param sprites_length Length of the sprites array.
  */
-void update_collision_states(Sprite *sonic, Sprite **sprites, int sprites_length) {
-    for (int i = 0; i < sprites_length; i++) {
+void update_collision_states(Sprite *sonic, Sprite **sprites, size_t sprites_length) {
+    for (size_t i = 0; i < sprites_length; i++) {
         bool is_colliding = check_collision(sonic, sprites[i]);
         Sprite *sprite = sprites[i];
         switch (sprite->collision_state) {
@@ -178,21 +187,17 @@ void update_collision_states(Sprite *sonic, Sprite **sprites, int sprites_length
  * @param sprites Array of pointers to the sprites to be checked for collisions.
  * @param sprites_length Length of the sprites array.
  */
-void handle_collisions(Sprite *sonic, Sprite **sprites, int sprites_length) {
-    for (int i = 0; i < sprites_length; i++) {
+void handle_collisions(Sprite *sonic, Sprite **sprites, size_t sprites_length) {
+    for (size_t i = 0; i < sprites_length; i++) {
         Sprite *sprite = sprites[i];
         switch (sprite->collision_state) {
             case COLLISION_ENTER:
-                switch (sprite->type) {
-                    case BUZZ:
-                    case BEE:
-                    case BAT:
-                    case FLAME:
-                    case PARROT:
-                        handle_enemy_collision(sonic, sprite);
+                switch (sprite->effect_type) {
+                    case EFFECT_DAMAGE:
+                        apply_damage(sonic, sprite);
                         break;
-                    case COIN:
-                        handle_coin_collision(sonic, sprite);
+                    case EFFECT_SCORE:
+                        apply_score(sonic, sprite);
                         break;
                 }
                 break;
@@ -205,4 +210,13 @@ void handle_collisions(Sprite *sonic, Sprite **sprites, int sprites_length) {
             default: break;
         }
     }
+}
+
+void apply_damage(Sprite* sonic, Sprite* enemy) {
+    emit_sfx(get_enemy_collision_sound(enemy->type));
+    emit_life_change(enemy, sonic);
+}
+
+void apply_score(Sprite *sonic, Sprite *ring) {
+    printf("apply_score \n");
 }

@@ -90,7 +90,7 @@ void handle_background_events(GameEvent event) {
 void handle_life_events(GameEvent event) {
     Sprite* source = event.payload.collision.source;
     Sprite* target = event.payload.collision.target;
-    target->life = MAX(target->life + source->damage_delta, 0);
+    target->life = MAX(target->life + source->effect_delta, 0);
     if (target->life <= 0) {
         emit_game_over();
         emit_music(MUSIC_GAME_OVER, false);

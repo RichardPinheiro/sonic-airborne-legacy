@@ -39,6 +39,6 @@ EmitterResult emit_game_over(void) {
     return EMITTER_SUCCESS;
 }
 
-static void emit_event(const GameEvent event) {
+void emit_event(const GameEvent event) {
     queue_event(&global_queue, event);
 }

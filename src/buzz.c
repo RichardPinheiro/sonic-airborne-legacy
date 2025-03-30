@@ -16,7 +16,7 @@ Sprite create_buzz_enemy(SDL_Renderer* renderer) {
         "assets/sprites/enemies/buzz/buzz_2.png"
     };
 
-    int frames_length = sizeof(buzz_frame_paths) / sizeof(buzz_frame_paths[0]);
+    size_t frames_length = sizeof(buzz_frame_paths) / sizeof(buzz_frame_paths[0]);
 
     SDL_Texture** buzz_texture = malloc(sizeof(SDL_Texture*) * frames_length);
     if (!buzz_texture) {
@@ -48,13 +48,15 @@ Sprite create_buzz_enemy(SDL_Renderer* renderer) {
 Sprite initialize_buzz(SDL_Renderer* renderer, Frames frames) {
     Sprite buzz;
     buzz.type = BUZZ;
-    buzz.damage_delta = BUZZ_DAMAGE_DELTA;
+    buzz.effect_type = EFFECT_DAMAGE;
+    buzz.effect_delta = BUZZ_EFFECT_DELTA;
     buzz.width = BUZZ_WIDTH;
     buzz.height = BUZZ_HEIGHT;
     buzz.x = WINDOW_WIDTH;
     buzz.y = set_random_position(&buzz);
     buzz.speed = BUZZ_SPEED;
-    buzz.current_frame = ENEMY_CURRENT_FRAME;
+    buzz.current_frame = BUZZ_CURRENT_FRAME;
+    buzz.collision_state = COLLISION_NONE;
     buzz.animation_accumulator = 0;
     buzz.frames = frames;
     create_texture(renderer, &buzz);
