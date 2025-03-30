@@ -34,6 +34,7 @@ typedef struct Sprite {
     float x, y;
     int width, height;
     int life;
+    int damage_delta;
     float speed;
     float velocity_x, velocity_y;
     float acceleration, friction;

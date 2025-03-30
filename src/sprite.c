@@ -15,7 +15,7 @@ void create_texture(SDL_Renderer* renderer, Sprite *sprite) {
         sprite->frames.texture[i] = IMG_LoadTexture(renderer, sprite->frames.paths[i]);
         if (!sprite->frames.texture[i]) {
             printf("Failed to load texture '%s': %s\n", sprite->frames.paths[i], IMG_GetError());
-            exit(1);
+            exit(EXIT_FAILURE);
         }
     }
 }

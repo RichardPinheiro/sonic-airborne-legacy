@@ -6,8 +6,6 @@
 #define MAX_EVENTS 10
 
 typedef enum {
-    EVENT_COLLISION_ENTER,
-    EVENT_COLLISION_EXIT,
     EVENT_LIFE_CHANGED,
     EVENT_STAGE_CHANGED,
     EVENT_MUSIC_PLAY,
@@ -20,8 +18,7 @@ typedef enum {
 typedef struct {
     GameEventType type;
     union {
-        struct { Sprite* a; Sprite* b; } collision;
-        struct { int delta; int current; } life;
+        struct { Sprite* source; Sprite* target; } collision;
         struct { AudioID id; } sfx;
         struct { AudioID id;  bool loop; } music;
         struct { int index; } stage;
@@ -45,5 +42,6 @@ void handle_sfx_events(GameEvent event);
 void handle_music_events(GameEvent event);
 void handle_background_events(GameEvent event);
 void handle_life_events(GameEvent event);
+void handle_game_over_events(GameEvent event);
 
 #endif

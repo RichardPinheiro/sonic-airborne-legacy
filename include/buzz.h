@@ -7,6 +7,7 @@
 #define BUZZ_HEIGHT 40
 #define BUZZ_SPEED -5.0
 #define BUZZ_FRAME_DELAY 140
+#define BUZZ_DAMAGE_DELTA -1
 
 Sprite create_buzz_enemy(SDL_Renderer* renderer);
 Sprite initialize_buzz(SDL_Renderer* renderer, Frames frames);

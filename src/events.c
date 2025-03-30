@@ -12,6 +12,7 @@ void process_events(EventQueue* queue) {
             case EVENT_LIFE_CHANGED: handle_life_events(event); break;
             case EVENT_SOUND_EFFECT: handle_sfx_events(event); break;
             case EVENT_MUSIC_PLAY: handle_music_events(event); break;
+            case EVENT_GAME_OVER: handle_game_over_events(event); break;
         }
     }
 }
@@ -67,9 +68,12 @@ void handle_sfx_events(GameEvent event) {
 
 void handle_music_events(GameEvent event) {
     switch(event.payload.music.id) {
-        case MUSIC_STAGE_1: play_music(event.payload.music.id, event.payload.music.loop); break;
-        case MUSIC_STAGE_2: play_music(event.payload.music.id, event.payload.music.loop); break;
-        case MUSIC_STAGE_3: play_music(event.payload.music.id, event.payload.music.loop); break;
+        case MUSIC_STAGE_1:
+        case MUSIC_STAGE_2:
+        case MUSIC_STAGE_3:
+        case MUSIC_GAME_OVER:
+            play_music(event.payload.music.id, event.payload.music.loop);
+            break;
     }
 }
 
@@ -84,14 +88,15 @@ void handle_background_events(GameEvent event) {
 }
 
 void handle_life_events(GameEvent event) {
-    printf("handle_life_events \n");
-    printf("current_life: %d\n", event.payload.life.current += event.payload.life.delta);
-    // if(event.type == EVENT_LIFE_CHANGED) {
-    //     // handle_life_decrement();
-    //     // update_life_display(event.current_life);
-        
-    //     if(event.current_life <= 0) {
-    //         // queue_event(&global_queue, (GameEvent){EVENT_GAME_OVER});
-    //     }
-    // }
+    Sprite* source = event.payload.collision.source;
+    Sprite* target = event.payload.collision.target;
+    target->life = MAX(target->life + source->damage_delta, 0);
+    if (target->life <= 0) {
+        emit_game_over();
+        emit_music(MUSIC_GAME_OVER, false);
+    }
+}
+
+void handle_game_over_events(GameEvent event) {
+    printf("GAME OVER");
 }

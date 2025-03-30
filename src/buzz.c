@@ -21,7 +21,7 @@ Sprite create_buzz_enemy(SDL_Renderer* renderer) {
     SDL_Texture** buzz_texture = malloc(sizeof(SDL_Texture*) * frames_length);
     if (!buzz_texture) {
         printf("Memory allocation failed for buzz_texture!\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 
     Frames buzz_frames = {
@@ -48,6 +48,7 @@ Sprite create_buzz_enemy(SDL_Renderer* renderer) {
 Sprite initialize_buzz(SDL_Renderer* renderer, Frames frames) {
     Sprite buzz;
     buzz.type = BUZZ;
+    buzz.damage_delta = BUZZ_DAMAGE_DELTA;
     buzz.width = BUZZ_WIDTH;
     buzz.height = BUZZ_HEIGHT;
     buzz.x = WINDOW_WIDTH;

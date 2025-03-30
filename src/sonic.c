@@ -23,7 +23,7 @@ Sprite create_sonic(SDL_Renderer* renderer) {
     SDL_Texture** sonic_texture = malloc(sizeof(SDL_Texture*) * frames_length);
     if (!sonic_texture) {
         printf("Memory allocation failed for sonic_texture!\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 
     Frames sonic_frames = {
@@ -187,18 +187,8 @@ void check_boundary(Sprite *sonic) {
 }
 
 void handle_enemy_collision(Sprite* sonic, Sprite* enemy) {
-    GameEvent life_event = {
-        .type = EVENT_LIFE_CHANGED,
-        .payload.life.delta = -1,
-        .payload.life.current = sonic->life
-    };
-    queue_event(&global_queue, life_event);
-
-    GameEvent sfx_event = {
-        .type = EVENT_SOUND_EFFECT,
-        .payload.sfx.id = get_enemy_collision_sound(enemy->type) 
-    };
-    queue_event(&global_queue, sfx_event);
+    emit_sfx(get_enemy_collision_sound(enemy->type));
+    emit_life_change(enemy, sonic);
 }
 
 void handle_coin_collision(Sprite *sonic, Sprite *coin) {

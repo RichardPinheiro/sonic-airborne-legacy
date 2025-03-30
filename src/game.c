@@ -9,14 +9,14 @@ int main(void) {
     // Initialize SDL with video and image support
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("SDL initialization failed: %s\n", SDL_GetError());
-        return 1;
+        return EXIT_FAILURE;
     }
 
     // Initialize SDL_image for PNG support
     if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
         printf("SDL_image initialization failed: %s\n", IMG_GetError());
         SDL_Quit();
-        return 1;
+        return EXIT_FAILURE;
     }
 
     // Initialize SDL_mixer for sound support
@@ -24,32 +24,41 @@ int main(void) {
         printf("SDL_mixer initialization failed: %s\n", Mix_GetError());
         IMG_Quit();
         SDL_Quit();
-        return 1;
+        return EXIT_FAILURE;
     }
 
+    char window_title[128];
+    snprintf(window_title, sizeof(window_title), "%s - v%s", GAME_TITLE, GAME_VERSION);
     // Create a window
     SDL_Window* window = SDL_CreateWindow(
-        "Sonic in the Air",
+        window_title,
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
         WINDOW_WIDTH, WINDOW_HEIGHT,
-        0
+        0 // SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI
     );
     if (!window) {
         printf("Window creation failed: %s\n", SDL_GetError());
         IMG_Quit();
         SDL_Quit();
-        return 1;
+        return EXIT_FAILURE;
     }
 
-    // Create a renderer
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");  // Linear filtering
+    // Create accelerated vsync'd renderer
+    SDL_Renderer* renderer = SDL_CreateRenderer(
+        window,
+        -1,
+        SDL_RENDERER_ACCELERATED |
+        SDL_RENDERER_PRESENTVSYNC
+    );
+
     if (!renderer) {
         printf("Renderer creation failed: %s\n", SDL_GetError());
         SDL_DestroyWindow(window);
         IMG_Quit();
         SDL_Quit();
-        return 1;
+        return EXIT_FAILURE;
     }
 
     // Load background image
@@ -60,7 +69,7 @@ int main(void) {
         SDL_DestroyWindow(window);
         IMG_Quit();
         SDL_Quit();
-        return 1;
+        return EXIT_FAILURE;
     }
 
     Sprite sonic = create_sonic(renderer);
@@ -130,5 +139,5 @@ int main(void) {
     IMG_Quit();
     SDL_Quit();
 
-    return 0;
+    return EXIT_SUCCESS;
 }
