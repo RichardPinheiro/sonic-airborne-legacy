@@ -12,6 +12,7 @@
 #include "buzz.h"
 #include "sonic.h"
 #include "ring.h"
+#include "life.h"
 #include "audio.h"
 #include "events.h"
 #include "emitter.h"
