@@ -48,8 +48,9 @@ Sprite create_buzz_enemy(SDL_Renderer* renderer) {
 Sprite initialize_buzz(SDL_Renderer* renderer, Frames frames) {
     Sprite buzz;
     buzz.type = BUZZ;
-    buzz.effect_type = EFFECT_DAMAGE;
-    buzz.effect_delta = BUZZ_EFFECT_DELTA;
+    buzz.effects.effect_type = EFFECT_DAMAGE;
+    buzz.effects.life_delta = BUZZ_LIFE_DELTA;
+    buzz.effects.ring_delta = BUZZ_RING_DELTA;
     buzz.width = BUZZ_WIDTH;
     buzz.height = BUZZ_HEIGHT;
     buzz.x = WINDOW_WIDTH;

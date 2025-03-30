@@ -187,13 +187,3 @@ void check_boundary(Sprite *sonic) {
     sonic->x = fmaxf(0, fminf(sonic->x, WINDOW_WIDTH - sonic->width));
     sonic->y = fmaxf(0, fminf(sonic->y, WINDOW_HEIGHT - sonic->height));
 }
-
-void apply_damage_to_player(Sprite* enemy, Sprite* sonic) {
-    emit_life_change(enemy, sonic);
-    emit_sfx(get_collision_sound(enemy->type));
-}
-
-void apply_rings_to_player(Sprite *ring, Sprite *sonic) {
-    emit_rings_change(ring, sonic);
-    emit_sfx(get_collision_sound(ring->type));
-}

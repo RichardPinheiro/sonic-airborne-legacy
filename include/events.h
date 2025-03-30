@@ -36,7 +36,7 @@ typedef struct {
 extern EventQueue global_queue;
 
 void initialize_event_queue(void);
-void process_events(EventQueue* queue);
+void events_listener(EventQueue* queue);
 void queue_event(EventQueue* queue, GameEvent event);
 GameEvent dequeue_event(EventQueue* queue);
 bool is_queue_empty(const EventQueue* queue);

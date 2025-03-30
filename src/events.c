@@ -5,7 +5,7 @@ void initialize_event_queue(void) {
     global_queue.tail = 0;
 }
 
-void process_events(EventQueue* queue) {
+void events_listener(EventQueue* queue) {
     while(!is_queue_empty(queue)) {
         GameEvent event = dequeue_event(queue);
         switch(event.type) {
@@ -92,7 +92,7 @@ void handle_background_events(GameEvent event) {
 void handle_life_events(GameEvent event) {
     Sprite* source = event.payload.collision.source;
     Sprite* target = event.payload.collision.target;
-    target->life = MAX(target->life + source->effect_delta, 0);
+    target->life = MAX(target->life + source->effects.life_delta, 0);
     if (target->life <= 0) {
         emit_game_over();
         emit_music(MUSIC_GAME_OVER, false);
@@ -102,7 +102,7 @@ void handle_life_events(GameEvent event) {
 void handle_rings_events(GameEvent event) {
     Sprite* source = event.payload.collision.source;
     Sprite* target = event.payload.collision.target;
-    target->rings = MAX(target->rings + source->effect_delta, 0);
+    target->rings = MAX(target->rings + source->effects.ring_delta, 0);
 }
 
 void handle_game_over_events(GameEvent event) {

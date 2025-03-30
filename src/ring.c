@@ -54,8 +54,8 @@ Sprite create_ring(SDL_Renderer* renderer) {
 Sprite initialize_ring(SDL_Renderer* renderer, Frames frames) {
     Sprite ring;
     ring.type = RING;
-    ring.effect_type = EFFECT_RINGS;
-    ring.effect_delta = RING_EFFECT_DELTA;
+    ring.effects.effect_type = EFFECT_RING;
+    ring.effects.ring_delta = RING_DELTA;
     ring.width = RING_WIDTH;
     ring.height = RING_HEIGHT;
     ring.x = WINDOW_WIDTH;

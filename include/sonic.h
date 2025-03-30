@@ -20,7 +20,5 @@ bool is_arrow_pressed(const Uint8 *keystates);
 void apply_friction(Sprite *sonic, float time_scale_factor); 
 void update_position(Sprite *sonic, float time_scale_factor);
 void check_boundary(Sprite *sonic);
-void apply_damage_to_player(Sprite* enemy, Sprite* sonic);
-void apply_rings_to_player(Sprite *ring, Sprite *sonic);
 
 #endif

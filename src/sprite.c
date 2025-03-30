@@ -199,9 +199,9 @@ void handle_collisions(Sprite *sonic, Sprite **sprites, size_t sprites_length) {
 }
 
 void handle_collision_enter(Sprite *sprite, Sprite *sonic) {
-    switch (sprite->effect_type) {
-        case EFFECT_DAMAGE: apply_damage_to_player(sprite, sonic); break;
-        case EFFECT_RINGS: apply_rings_to_player(sprite, sonic); break;
+    switch (sprite->effects.effect_type) {
+        case EFFECT_DAMAGE: apply_penalties(sprite, sonic); break;
+        case EFFECT_RING: apply_bonus(sprite, sonic); break;
     }
 }
 
@@ -213,4 +213,15 @@ void handle_collision_stay(Sprite *sprite, Sprite *sonic) {
 void handle_collision_exit(Sprite *sprite, Sprite *sonic) {
     sprite->collision_state = COLLISION_NONE;
     sonic->collision_state = COLLISION_NONE;
+}
+
+void apply_penalties(Sprite* source, Sprite* target) {
+    emit_life_change(source, target);
+    emit_rings_change(source, target);
+    emit_sfx(get_collision_sound(source->type));
+}
+
+void apply_bonus(Sprite *source, Sprite *target) {
+    emit_rings_change(source, target);
+    emit_sfx(get_collision_sound(source->type));
 }

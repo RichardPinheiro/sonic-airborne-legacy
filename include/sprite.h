@@ -34,8 +34,15 @@ typedef enum {
     EFFECT_DAMAGE,
     EFFECT_HEALING,
     EFFECT_SCORE,
-    EFFECT_RINGS
+    EFFECT_RING
 } EffectType;
+
+typedef struct {
+    EffectType effect_type;
+    int16_t life_delta;
+    int16_t ring_delta;
+} Effects;
+
 
 typedef struct Sprite {
     float x, y;
@@ -50,13 +57,12 @@ typedef struct Sprite {
     float boundary_left, boundary_right;
     float boundary_top, boundary_bottom;
     size_t current_frame;
-    int8_t effect_delta;
-    EffectType effect_type;
     Uint32 hover_start_time;
     Uint32 animation_accumulator;
     Frames frames;
     SpriteType type;
     CollisionState collision_state;
+    Effects effects;
 } Sprite;
 
 void create_texture(SDL_Renderer* renderer, Sprite *sprite);
@@ -73,5 +79,7 @@ void handle_collisions(Sprite *sonic, Sprite **sprites, size_t sprites_length);
 void handle_collision_enter(Sprite *sprite, Sprite *sonic);
 void handle_collision_stay(Sprite *sprite, Sprite *sonic);
 void handle_collision_exit(Sprite *sprite, Sprite *sonic);
+void apply_penalties(Sprite* source, Sprite* target);
+void apply_bonus(Sprite* source, Sprite* target);
 
 #endif

@@ -8,7 +8,7 @@
 #define RING_SPEED -6.0
 #define RING_FRAME_DELAY 100
 #define RING_CURRENT_FRAME 1
-#define RING_EFFECT_DELTA 1
+#define RING_DELTA 1
 
 
 Sprite create_ring(SDL_Renderer* renderer);
