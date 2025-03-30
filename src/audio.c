@@ -37,6 +37,7 @@ AudioID get_collision_sound(SpriteType type) {
         case FLAME: return SFX_COLLISION_FLAME;
         case PARROT: return SFX_COLLISION_PARROT;
         case RING: return SFX_COLLISION_RING;
+        case LIFE: return SFX_COLLISION_LIFE;
         default: return SFX_COLLISION_BUZZ;
     }
 }

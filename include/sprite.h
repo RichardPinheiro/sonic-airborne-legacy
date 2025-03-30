@@ -82,5 +82,6 @@ void handle_collision_stay(Sprite *sprite, Sprite *sonic);
 void handle_collision_exit(Sprite *sprite, Sprite *sonic);
 void apply_penalties(Sprite* source, Sprite* target);
 void apply_bonus(Sprite* source, Sprite* target);
+void apply_Life(Sprite* source, Sprite* target);
 
 #endif

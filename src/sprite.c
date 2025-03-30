@@ -202,6 +202,7 @@ void handle_collision_enter(Sprite *sprite, Sprite *sonic) {
     switch (sprite->effects.effect_type) {
         case DAMAGE_EFFECT: apply_penalties(sprite, sonic); break;
         case RING_EFFECT: apply_bonus(sprite, sonic); break;
+        case LIFE_EFFECT: apply_Life(sprite, sonic); break;
     }
 }
 
@@ -223,5 +224,10 @@ void apply_penalties(Sprite* source, Sprite* target) {
 
 void apply_bonus(Sprite *source, Sprite *target) {
     emit_rings_change(source, target);
+    emit_sfx(get_collision_sound(source->type));
+}
+
+void apply_Life(Sprite* source, Sprite* target) {
+    emit_life_change(source, target);
     emit_sfx(get_collision_sound(source->type));
 }

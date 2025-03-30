@@ -62,7 +62,7 @@ void handle_sfx_events(GameEvent event) {
         case SFX_COLLISION_FLAME:
         case SFX_COLLISION_PARROT:
         case SFX_COLLISION_RING:
-        case SFX_EXTRA_LIFE:
+        case SFX_COLLISION_LIFE:
             play_sound(event.payload.sfx.id);
             break;
     }
