@@ -73,8 +73,10 @@ int main(void) {
     }
 
     Sprite sonic = create_sonic(renderer);
+    Sprite ring = create_ring(renderer);
     Sprite buzz = create_buzz_enemy(renderer);
-    Sprite *sprites[] = {
+    Sprite **sprites[] = {
+        &ring,
         &buzz
     };
     int sprites_length = sizeof(sprites) / sizeof(sprites[0]);
@@ -107,10 +109,12 @@ int main(void) {
 
         const Uint8 *keystates = SDL_GetKeyboardState(NULL);
         sonic_motion(&sonic, delta_time, keystates);
-        enemy_motion(&buzz, delta_time);
+        sprite_motion(&ring, delta_time);
+        sprite_motion(&buzz, delta_time);
 
-        sprite_animation(&buzz, delta_time);
         sprite_animation(&sonic, delta_time);
+        sprite_animation(&ring, delta_time);
+        sprite_animation(&buzz, delta_time);
 
         update_collision_states(&sonic, sprites, sprites_length);
         handle_collisions(&sonic, sprites, sprites_length);
@@ -120,16 +124,18 @@ int main(void) {
         SDL_RenderClear(renderer); // Clear the screen
         SDL_RenderCopy(renderer, background, NULL, NULL); // Render the background
 
-        sprite_render(&buzz, renderer);
         sprite_render(&sonic, renderer);
+        sprite_render(&ring, renderer);
+        sprite_render(&buzz, renderer);
 
         SDL_RenderPresent(renderer); // Update the display
         last_frame_time = current_time; // Update timing for next frame
     }
 
     // Clean up
-    free_sprite_frames(&buzz);
     free_sprite_frames(&sonic);
+    free_sprite_frames(&ring);
+    free_sprite_frames(&buzz);
     SDL_DestroyTexture(background);
     audio_cleanup();
     Mix_CloseAudio();
