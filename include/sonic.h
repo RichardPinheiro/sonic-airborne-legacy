@@ -3,13 +3,12 @@
 
 #include "game.h"
 
-#define SONIC_WIDTH 200
-#define SONIC_HEIGHT 157
 #define SONIC_FRAME_DELAY 100
 #define SONIC_CURRENT_FRAME 0
 #define SONIC_SPEED 0
 #define SONIC_LIFE 5
 #define SONIC_RINGS 0
+#define SONIC_ZOOM_SCALE 1.0f
 
 Sprite create_sonic(SDL_Renderer* renderer);
 Sprite initialize_sonic(SDL_Renderer* renderer, Frames frames);

@@ -21,20 +21,23 @@ void create_texture(SDL_Renderer* renderer, Sprite *sprite) {
 }
 
 /**
- * @brief Updates the sprite's animation frame based on elapsed time.
+ * @brief Updates the sprite's animation frame based on elapsed time and updates dimensions.
  * 
  * This function manages frame progression using an accumulator pattern to track
  * elapsed time between frame changes. It advances the animation frame when the
  * accumulated time exceeds the frame delay duration.
+ * It also updates dimensions when frame actually changes.
  * 
  * @param sprite Pointer to Sprite with animation properties
  * @param delta_time Milliseconds elapsed since last update
  */
 void sprite_animation(Sprite *sprite, Uint32 delta_time) {
     sprite->animation_accumulator += delta_time;
-    if (sprite->animation_accumulator >= sprite->frames.delay) {
+    while (sprite->animation_accumulator >= sprite->frames.delay) {
         sprite->current_frame = (sprite->current_frame + 1) % sprite->frames.length;
         sprite->animation_accumulator -= sprite->frames.delay;
+        sprite->width = sprite->frames.widths[sprite->current_frame];
+        sprite->height = sprite->frames.heights[sprite->current_frame];
     }
 }
 
@@ -42,42 +45,47 @@ void sprite_motion(Sprite *sprite, Uint32 delta_time) {
     sprite->x += sprite->speed * get_time_scale_factor(delta_time);
     if (sprite->x + sprite->width < 0) {
         sprite->x = WINDOW_WIDTH + sprite->width;
-        sprite->y = set_random_position(sprite);
+        sprite->y = set_random_y_position(sprite);
     }
     update_sprite_boundaries(sprite);
 }
 
 /**
- * @brief Renders the sprite's current animation frame to the specified renderer.
+ * @brief  Renders the sprite with scaling and sub-pixel positioning.
  * 
  * This function draws the sprite using its current position, dimensions, and
  * animation frame texture. The rendering position is derived from the sprite's
  * floating-point coordinates converted to integer values for SDL rendering.
+ * It also calculates scaled dimensions from base size (e.g., zoom in/out).
  * 
  * @param sprite Pointer to Sprite to render
  * @param renderer SDL_Renderer target for drawing operations
  */
 void sprite_render(Sprite *sprite, SDL_Renderer* renderer) {
+    const int scaled_width = (int)(sprite->width * sprite->scale);
+    const int scaled_height = (int)(sprite->height * sprite->scale);
     SDL_Rect sprite_rect = {
-        (int)sprite->x,
-        (int)sprite->y,
-        sprite->width,
-        sprite->height
+        (int)roundf(sprite->x) - scaled_width / 2,
+        (int)roundf(sprite->y) - scaled_height / 2,
+        scaled_width,
+        scaled_height
     };
-    SDL_RenderCopy(renderer, sprite->frames.texture[sprite->current_frame], NULL, &sprite_rect);
+    SDL_Texture* texture = sprite->frames.texture[sprite->current_frame];
+    SDL_RenderCopy(renderer, texture, NULL, &sprite_rect);
 }
 
 /**
- * @brief Generates a random vertical position within window boundaries.
+ * @brief Generates a random position keeping the sprite fully visible.
  * 
- * This function calculates a safe vertical position that keeps the sprite fully
- * visible within the application window's height constraints.
+ * Accounts for centered positioning and scaled dimensions to ensure
+ * the sprite never spawns partially off-screen.
  * 
- * @param sprite Pointer to Sprite used for dimension calculations
- * @return Integer Y-coordinate in range [0, WINDOW_HEIGHT - sprite height]
+ * @param sprite Pointer to Sprite (uses base_width/base_height and scale)
+ * @return Y-coordinate in safe range [half_height, WINDOW_HEIGHT - half_height]
  */
-int set_random_position(Sprite *sprite) {
-    return rand() % (WINDOW_HEIGHT - sprite->height);
+int set_random_y_position(const Sprite* sprite) {
+    const int half_height = (int)(sprite->height * sprite->scale) / 2;
+    return half_height + rand() % (WINDOW_HEIGHT - 2 * half_height);
 }
 
 /**
@@ -124,11 +132,12 @@ float get_time_scale_factor(Uint32 delta_time) {
  * @return true` if the sprites' bounding boxes overlap, `false` otherwise.
  */
 bool check_collision(Sprite *sprite_a, Sprite *sprite_b) {
-    bool x_overlap = sprite_a->boundary_left < sprite_b->boundary_right &&
-        sprite_a->boundary_right > sprite_b->boundary_left;
-    bool y_overlap = sprite_a->boundary_top < sprite_b->boundary_bottom &&
-        sprite_a->boundary_bottom > sprite_b->boundary_top;
-    return x_overlap && y_overlap;
+    return(
+        sprite_a->boundary_left < sprite_b->boundary_right &&
+        sprite_a->boundary_right > sprite_b->boundary_left &&
+        sprite_a->boundary_top < sprite_b->boundary_bottom &&
+        sprite_a->boundary_bottom > sprite_b->boundary_top
+    );
 }
 
 /**
@@ -141,10 +150,12 @@ bool check_collision(Sprite *sprite_a, Sprite *sprite_b) {
  * @param sprite Pointer to the sprite whose boundaries need to be updated.
  */
 void update_sprite_boundaries(Sprite *sprite) {
-    sprite->boundary_left = sprite->x;
-    sprite->boundary_right = sprite->x + sprite->width;
-    sprite->boundary_top = sprite->y;
-    sprite->boundary_bottom = sprite->y + sprite->height;
+    const float scaled_width = sprite->width * sprite->scale;
+    const float scaled_height = sprite->height * sprite->scale;
+    sprite->boundary_left = sprite->x - scaled_width / 2;
+    sprite->boundary_right = sprite->x + scaled_width / 2;
+    sprite->boundary_top = sprite->y - scaled_height / 2;
+    sprite->boundary_bottom = sprite->y + scaled_height / 2;
 }
 
 /**

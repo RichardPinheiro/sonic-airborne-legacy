@@ -11,6 +11,8 @@ typedef struct Frames {
     size_t length;
     Uint32 delay;
     SDL_Texture** texture;
+    int* widths;
+    int* heights;
 } Frames;
 
 typedef enum {
@@ -46,15 +48,14 @@ typedef struct {
 
 
 typedef struct Sprite {
-    float x, y;
+    float x, y, scale;
     int width, height;
     int life;
     int rings;
     float speed;
     float velocity_x, velocity_y;
     float acceleration, friction;
-    float hover_amplitude;
-    float hover_frequency;
+    float hover_amplitude, hover_frequency;
     float boundary_left, boundary_right;
     float boundary_top, boundary_bottom;
     size_t current_frame;
@@ -70,7 +71,7 @@ void create_texture(SDL_Renderer* renderer, Sprite *sprite);
 void sprite_animation(Sprite *sprite, Uint32 delta_time);
 void sprite_motion(Sprite *sprite, Uint32 delta_time);
 void sprite_render(Sprite *sprite, SDL_Renderer* renderer);
-int set_random_position(Sprite *sprite);
+int set_random_y_position(const Sprite *sprite);
 void free_sprite_frames(Sprite *sprite);
 float get_time_scale_factor(Uint32 delta_time);
 bool check_collision(Sprite *sprite_a, Sprite *sprite_b);

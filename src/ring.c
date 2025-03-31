@@ -21,18 +21,32 @@ Sprite create_ring(SDL_Renderer* renderer) {
 
     size_t frames_length = sizeof(ring_frame_paths) / sizeof(ring_frame_paths[0]);
 
-    SDL_Texture** ring_texture = malloc(sizeof(SDL_Texture*) * frames_length);
-    if (!ring_texture) {
-        printf("Memory allocation failed for ring_texture!\n");
-        exit(EXIT_FAILURE);
-    }
-
     Frames ring_frames = {
         ring_frame_paths,
         frames_length,
         RING_FRAME_DELAY,
-        ring_texture
+        malloc(sizeof(SDL_Texture*) * frames_length),
+        .widths = malloc(sizeof(int) * frames_length),
+        .heights = malloc(sizeof(int) * frames_length)
     };
+
+    for (size_t i = 0; i < frames_length; i++) {
+        SDL_Surface* surface = IMG_Load(ring_frame_paths[i]);
+        if (!surface) {
+            printf("Failed to load %s: %s\n", ring_frame_paths[i], IMG_GetError());
+            exit(EXIT_FAILURE);
+        }
+
+        ring_frames.widths[i] = surface->w;
+        ring_frames.heights[i] = surface->h;
+        SDL_FreeSurface(surface);
+
+        ring_frames.texture[i] = IMG_LoadTexture(renderer, ring_frame_paths[i]);
+        if (!ring_frames.texture[i]) {
+            printf("Texture creation failed: %s\n", SDL_GetError());
+            exit(EXIT_FAILURE);
+        }
+    }
 
     return initialize_ring(renderer, ring_frames);
 }
@@ -56,10 +70,11 @@ Sprite initialize_ring(SDL_Renderer* renderer, Frames frames) {
     ring.type = RING;
     ring.effects.effect_type = RING_EFFECT;
     ring.effects.ring_delta = RING_DELTA;
-    ring.width = RING_WIDTH;
-    ring.height = RING_HEIGHT;
+    ring.scale = RING_ZOOM_SCALE;
+    ring.width = frames.widths[0];
+    ring.height = frames.heights[0];
     ring.x = WINDOW_WIDTH;
-    ring.y = set_random_position(&ring);
+    ring.y = set_random_y_position(&ring);
     ring.speed = RING_SPEED;
     ring.current_frame = RING_CURRENT_FRAME;
     ring.collision_state = COLLISION_NONE;

@@ -110,15 +110,15 @@ int main(void) {
         }
 
         const Uint8 *keystates = SDL_GetKeyboardState(NULL);
-        sonic_motion(&sonic, delta_time, keystates);
-        sprite_motion(&ring, delta_time);
-        sprite_motion(&life, delta_time);
-        sprite_motion(&buzz, delta_time);
-
         sprite_animation(&sonic, delta_time);
         sprite_animation(&ring, delta_time);
         sprite_animation(&life, delta_time);
         sprite_animation(&buzz, delta_time);
+
+        sonic_motion(&sonic, delta_time, keystates);
+        sprite_motion(&ring, delta_time);
+        sprite_motion(&life, delta_time);
+        sprite_motion(&buzz, delta_time);
 
         update_collision_states(&sonic, sprites, sprites_length);
         handle_collisions(&sonic, sprites, sprites_length);

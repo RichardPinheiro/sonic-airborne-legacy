@@ -20,18 +20,32 @@ Sprite create_sonic(SDL_Renderer* renderer) {
 
     size_t frames_length = sizeof(sonic_frame_paths) / sizeof(sonic_frame_paths[0]);
 
-    SDL_Texture** sonic_texture = malloc(sizeof(SDL_Texture*) * frames_length);
-    if (!sonic_texture) {
-        printf("Memory allocation failed for sonic_texture!\n");
-        exit(EXIT_FAILURE);
-    }
-
     Frames sonic_frames = {
         sonic_frame_paths,
         frames_length,
         SONIC_FRAME_DELAY,
-        sonic_texture
+        malloc(sizeof(SDL_Texture*) * frames_length),
+        .widths = malloc(sizeof(int) * frames_length),
+        .heights = malloc(sizeof(int) * frames_length)
     };
+
+    for (size_t i = 0; i < frames_length; i++) {
+        SDL_Surface* surface = IMG_Load(sonic_frame_paths[i]);
+        if (!surface) {
+            printf("Failed to load %s: %s\n", sonic_frame_paths[i], IMG_GetError());
+            exit(EXIT_FAILURE);
+        }
+
+        sonic_frames.widths[i] = surface->w;
+        sonic_frames.heights[i] = surface->h;
+        SDL_FreeSurface(surface);
+
+        sonic_frames.texture[i] = IMG_LoadTexture(renderer, sonic_frame_paths[i]);
+        if (!sonic_frames.texture[i]) {
+            printf("Texture creation failed: %s\n", SDL_GetError());
+            exit(EXIT_FAILURE);
+        }
+    }
 
     return initialize_sonic(renderer, sonic_frames);
 }
@@ -52,10 +66,11 @@ Sprite initialize_sonic(SDL_Renderer* renderer, Frames frames) {
     sonic.type = PLAYER;
     sonic.life = SONIC_LIFE;
     sonic.rings = SONIC_RINGS;
+    sonic.scale = SONIC_ZOOM_SCALE;
+    sonic.width = frames.widths[0];
+    sonic.height = frames.heights[0];
     sonic.x = 0;
-    sonic.y = (WINDOW_HEIGHT - SONIC_HEIGHT) / 2;
-    sonic.width = SONIC_WIDTH;
-    sonic.height = SONIC_HEIGHT;
+    sonic.y = (WINDOW_HEIGHT - sonic.height) / 2;
     sonic.speed = SONIC_SPEED;
     sonic.current_frame = SONIC_CURRENT_FRAME;
     sonic.collision_state = COLLISION_NONE;
@@ -87,8 +102,8 @@ void sonic_motion(Sprite *sonic, Uint32 delta_time, const Uint8 *keystates) {
     watch_player_interactions(sonic, keystates);
     apply_friction(sonic, time_scale_factor);
     update_position(sonic, time_scale_factor);
-    update_sprite_boundaries(sonic);
     check_boundary(sonic);
+    update_sprite_boundaries(sonic);
 }
 
 /**
@@ -175,15 +190,19 @@ void update_position(Sprite *sonic, float time_scale_factor) {
 }
 
 /**
- * @brief Keeps the sprite inside the window boundaries.
+ * @brief Clamps the sprite within window boundaries considering scaled size and centered position.
  *
- * This function ensures the sprite does not move outside the visible area of the window
- * by restricting its X and Y coordinates.
- * It uses floating-point math to handle sub-pixel positions.
- * 
- * @param sprite Sprite to clamp (modifies `x` and `y`).
+ * This function ensures the sprite's *center* stays within the visible area while
+ * accounting for its scaled dimensions. Uses half-width/height to prevent edges
+ * from going out of bounds. It also calculates scaled half-dimensions to apply on
+ * X-axis: Keep center between [half_width, WINDOW_WIDTH - half_width],
+ * Y-axis: Keep center between [half_height, WINDOW_HEIGHT - half_height].
+ *
+ * @param sprite Sprite to clamp (modifies x/y)
  */
-void check_boundary(Sprite *sonic) {
-    sonic->x = fmaxf(0, fminf(sonic->x, WINDOW_WIDTH - sonic->width));
-    sonic->y = fmaxf(0, fminf(sonic->y, WINDOW_HEIGHT - sonic->height));
+void check_boundary(Sprite *sprite) {
+    const float half_width = (sprite->width * sprite->scale) / 2;
+    const float half_height = (sprite->height * sprite->scale) / 2;
+    sprite->x = fmaxf(half_width, fminf(sprite->x, WINDOW_WIDTH - half_width));
+    sprite->y = fmaxf(half_height, fminf(sprite->y, WINDOW_HEIGHT - half_height));
 }
