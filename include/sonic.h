@@ -11,6 +11,7 @@
 #define SONIC_ZOOM_SCALE 1.0f
 
 Sprite create_sonic(SDL_Renderer* renderer);
+static void load_texture(Frames* frames, SDL_Renderer* renderer);
 Sprite initialize_sonic(SDL_Renderer* renderer, Frames frames);
 void sonic_motion(Sprite *sonic, Uint32 delta_time, const Uint8 *keystates);
 void watch_player_interactions(Sprite *sonic, const Uint8 *keystates);

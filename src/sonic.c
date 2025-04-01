@@ -11,43 +11,57 @@
  * @return A new Sonic sprite with the specified properties.
  */
 Sprite create_sonic(SDL_Renderer* renderer) {
-    const char* sonic_frame_paths[] = {
+    const char* frame_paths[] = {
         "assets/sprites/sonic/sonic_1.png",
         "assets/sprites/sonic/sonic_2.png",
         "assets/sprites/sonic/sonic_3.png",
         "assets/sprites/sonic/sonic_4.png"
     };
-
-    size_t frames_length = sizeof(sonic_frame_paths) / sizeof(sonic_frame_paths[0]);
-
-    Frames sonic_frames = {
-        sonic_frame_paths,
+    size_t frames_length = sizeof(frame_paths) / sizeof(frame_paths[0]);
+    Frames frames = {
+        frame_paths,
         frames_length,
         SONIC_FRAME_DELAY,
         malloc(sizeof(SDL_Texture*) * frames_length),
-        .widths = malloc(sizeof(int) * frames_length),
-        .heights = malloc(sizeof(int) * frames_length)
+        malloc(sizeof(int) * frames_length),
+        malloc(sizeof(int) * frames_length)
     };
+    if (!frames.texture || !frames.widths || !frames.heights) {
+        fprintf(stderr, "Failed to allocate memory for Frames resources.\n");
+        exit(EXIT_FAILURE);
+    }
+    load_texture(&frames, renderer);
+    return initialize_sonic(renderer, frames);
+}
 
-    for (size_t i = 0; i < frames_length; i++) {
-        SDL_Surface* surface = IMG_Load(sonic_frame_paths[i]);
+/**
+ * @brief Loads textures for each frame in the Frames structure.
+ *
+ * This function iterates over the frame paths in the Frames structure,
+ * loads each image as an SDL_Surface, retrieves its dimensions, and
+ * creates an SDL_Texture from it. The textures and their dimensions
+ * are stored in the Frames structure.
+ *
+ * @param frames A pointer to a Frames structure containing paths and
+ *        storage for textures and their dimensions.
+ * @param renderer A pointer to the SDL_Renderer used to create textures.
+ */
+static void load_texture(Frames* frames, SDL_Renderer* renderer) {
+    for (size_t i = 0; i < frames->length; i++) {
+        SDL_Surface* surface = IMG_Load(frames->paths[i]);
         if (!surface) {
-            printf("Failed to load %s: %s\n", sonic_frame_paths[i], IMG_GetError());
+            printf("Failed to load %s: %s\n", frames->paths[i], IMG_GetError());
             exit(EXIT_FAILURE);
         }
-
-        sonic_frames.widths[i] = surface->w;
-        sonic_frames.heights[i] = surface->h;
+        frames->widths[i] = surface->w;
+        frames->heights[i] = surface->h;
         SDL_FreeSurface(surface);
-
-        sonic_frames.texture[i] = IMG_LoadTexture(renderer, sonic_frame_paths[i]);
-        if (!sonic_frames.texture[i]) {
+        frames->texture[i] = IMG_LoadTexture(renderer, frames->paths[i]);
+        if (!frames->texture[i]) {
             printf("Texture creation failed: %s\n", SDL_GetError());
             exit(EXIT_FAILURE);
         }
     }
-
-    return initialize_sonic(renderer, sonic_frames);
 }
 
 /**

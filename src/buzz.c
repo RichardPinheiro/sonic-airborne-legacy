@@ -44,7 +44,7 @@ Sprite create_buzz_enemy(SDL_Renderer* renderer) {
  *        storage for textures and their dimensions.
  * @param renderer A pointer to the SDL_Renderer used to create textures.
  */
-void load_texture(Frames* frames, SDL_Renderer* renderer) {
+static void load_texture(Frames* frames, SDL_Renderer* renderer) {
     for (size_t i = 0; i < frames->length; i++) {
         SDL_Surface* surface = IMG_Load(frames->paths[i]);
         if (!surface) {
