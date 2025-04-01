@@ -11,41 +11,55 @@
  * @return Sprite Fully initialized Buzz enemy sprite
  */
 Sprite create_buzz_enemy(SDL_Renderer* renderer) {
-    const char* buzz_frame_paths[] = {
+    const char* frame_paths[] = {
         "assets/sprites/enemies/buzz/buzz_1.png",
         "assets/sprites/enemies/buzz/buzz_2.png"
     };
-
-    size_t frames_length = sizeof(buzz_frame_paths) / sizeof(buzz_frame_paths[0]);
-
-    Frames buzz_frames = {
-        buzz_frame_paths,
+    size_t frames_length = sizeof(frame_paths) / sizeof(frame_paths[0]);
+    Frames frames = {
+        frame_paths,
         frames_length,
         BUZZ_FRAME_DELAY,
         malloc(sizeof(SDL_Texture*) * frames_length),
-        .widths = malloc(sizeof(int) * frames_length),
-        .heights = malloc(sizeof(int) * frames_length)
+        malloc(sizeof(int) * frames_length),
+        malloc(sizeof(int) * frames_length)
     };
+    if (!frames.texture || !frames.widths || !frames.heights) {
+        fprintf(stderr, "Failed to allocate memory for Frames resources.\n");
+        exit(EXIT_FAILURE);
+    }
+    load_texture(&frames, renderer);
+    return initialize_buzz(renderer, frames);
+}
 
-    for (size_t i = 0; i < frames_length; i++) {
-        SDL_Surface* surface = IMG_Load(buzz_frame_paths[i]);
+/**
+ * @brief Loads textures for each frame in the Frames structure.
+ *
+ * This function iterates over the frame paths in the Frames structure,
+ * loads each image as an SDL_Surface, retrieves its dimensions, and
+ * creates an SDL_Texture from it. The textures and their dimensions
+ * are stored in the Frames structure.
+ *
+ * @param frames A pointer to a Frames structure containing paths and
+ *        storage for textures and their dimensions.
+ * @param renderer A pointer to the SDL_Renderer used to create textures.
+ */
+void load_texture(Frames* frames, SDL_Renderer* renderer) {
+    for (size_t i = 0; i < frames->length; i++) {
+        SDL_Surface* surface = IMG_Load(frames->paths[i]);
         if (!surface) {
-            printf("Failed to load %s: %s\n", buzz_frame_paths[i], IMG_GetError());
+            printf("Failed to load %s: %s\n", frames->paths[i], IMG_GetError());
             exit(EXIT_FAILURE);
         }
-
-        buzz_frames.widths[i] = surface->w;
-        buzz_frames.heights[i] = surface->h;
+        frames->widths[i] = surface->w;
+        frames->heights[i] = surface->h;
         SDL_FreeSurface(surface);
-
-        buzz_frames.texture[i] = IMG_LoadTexture(renderer, buzz_frame_paths[i]);
-        if (!buzz_frames.texture[i]) {
+        frames->texture[i] = IMG_LoadTexture(renderer, frames->paths[i]);
+        if (!frames->texture[i]) {
             printf("Texture creation failed: %s\n", SDL_GetError());
             exit(EXIT_FAILURE);
         }
     }
-
-    return initialize_buzz(renderer, buzz_frames);
 }
 
 /**

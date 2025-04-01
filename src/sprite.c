@@ -41,10 +41,22 @@ void sprite_animation(Sprite *sprite, Uint32 delta_time) {
     }
 }
 
+/**
+ * @brief Updates the position and boundaries of a sprite based on its speed and elapsed time.
+ *
+ * This function calculates the new position of the sprite by applying its speed
+ * and a time scale factor derived from the elapsed time. If the sprite moves off
+ * the left edge of the screen, it wraps around to the right edge and is assigned
+ * a new random vertical position. The sprite's boundaries are updated accordingly.
+ *
+ * @param sprite Pointer to the Sprite whose position and boundaries are to be updated.
+ * @param delta_time The time elapsed since the last update, in milliseconds.
+ */
 void sprite_motion(Sprite *sprite, Uint32 delta_time) {
+    const float scaled_width = sprite->width * sprite->scale;
     sprite->x += sprite->speed * get_time_scale_factor(delta_time);
-    if (sprite->x + sprite->width < 0) {
-        sprite->x = WINDOW_WIDTH + sprite->width;
+    if (sprite->x + (scaled_width / 2) < 0) {
+        sprite->x = WINDOW_WIDTH + (scaled_width / 2);
         sprite->y = set_random_y_position(sprite);
     }
     update_sprite_boundaries(sprite);

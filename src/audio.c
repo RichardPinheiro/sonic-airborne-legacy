@@ -43,9 +43,8 @@ AudioID get_collision_sound(SpriteType type) {
 }
 
 void audio_cleanup(void) {
-    Mix_HaltChannel(-1); //Stop all sound effects immediately -1 = all channels
-    Mix_HaltMusic();     // Stop music playback
-    // Free memory
+    Mix_HaltChannel(-1);
+    Mix_HaltMusic();
     for(int i = 0; i < AUDIO_COUNT; i++) {
         if(audio_registry[i].is_music) {
             if(audio_registry[i].music) {
