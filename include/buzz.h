@@ -11,7 +11,6 @@
 #define BUZZ_ZOOM_SCALE 1.2f
 
 Sprite create_buzz_enemy(SDL_Renderer* renderer);
-static void load_texture(Frames *frames, SDL_Renderer* renderer);
-Sprite initialize_buzz(SDL_Renderer* renderer, Frames frames);
+Sprite initialize_buzz(Frames frames);
 
 #endif

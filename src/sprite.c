@@ -1,20 +1,30 @@
 #include "game.h"
 
 /**
- * @brief Loads and initializes textures for a sprite's animation frames.
- * 
- * This function loads image files specified in the sprite's frame paths into 
- * GPU textures using the provided renderer. It initializes the sprite's texture 
- * array with 1:1 mapping to its frame paths.
- * 
- * @param renderer SDL_Renderer used for texture creation
- * @param sprite Pointer to Sprite struct containing frame path data
+ * @brief Loads textures for each frame in the Frames structure.
+ *
+ * This function iterates over the frame paths in the Frames structure,
+ * loads each image as an SDL_Surface, retrieves its dimensions, and
+ * creates an SDL_Texture from it. The textures and their dimensions
+ * are stored in the Frames structure.
+ *
+ * @param frames A pointer to a Frames structure containing paths and
+ *        storage for textures and their dimensions.
+ * @param renderer A pointer to the SDL_Renderer used to create textures.
  */
-void create_texture(SDL_Renderer* renderer, Sprite *sprite) {
-    for (size_t i = 0; i < sprite->frames.length; i++) {
-        sprite->frames.texture[i] = IMG_LoadTexture(renderer, sprite->frames.paths[i]);
-        if (!sprite->frames.texture[i]) {
-            printf("Failed to load texture '%s': %s\n", sprite->frames.paths[i], IMG_GetError());
+void load_texture(Frames* frames, SDL_Renderer* renderer) {
+    for (size_t i = 0; i < frames->length; i++) {
+        SDL_Surface* surface = IMG_Load(frames->paths[i]);
+        if (!surface) {
+            printf("Failed to load %s: %s\n", frames->paths[i], IMG_GetError());
+            exit(EXIT_FAILURE);
+        }
+        frames->widths[i] = surface->w;
+        frames->heights[i] = surface->h;
+        SDL_FreeSurface(surface);
+        frames->texture[i] = IMG_LoadTexture(renderer, frames->paths[i]);
+        if (!frames->texture[i]) {
+            printf("Texture creation failed: %s\n", SDL_GetError());
             exit(EXIT_FAILURE);
         }
     }

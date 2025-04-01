@@ -67,7 +67,7 @@ typedef struct Sprite {
     Effects effects;
 } Sprite;
 
-void create_texture(SDL_Renderer* renderer, Sprite *sprite);
+void load_texture(Frames* frames, SDL_Renderer* renderer);
 void sprite_animation(Sprite *sprite, Uint32 delta_time);
 void sprite_motion(Sprite *sprite, Uint32 delta_time);
 void sprite_render(Sprite *sprite, SDL_Renderer* renderer);

@@ -10,6 +10,6 @@
 #define RING_ZOOM_SCALE 0.2f
 
 Sprite create_ring(SDL_Renderer* renderer);
-Sprite initialize_ring(SDL_Renderer* renderer, Frames frames);
+Sprite initialize_ring(Frames frames);
 
 #endif
