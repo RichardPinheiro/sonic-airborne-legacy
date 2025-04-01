@@ -52,7 +52,7 @@ Sprite initialize_sonic(Frames frames) {
     sonic.width = frames.widths[0];
     sonic.height = frames.heights[0];
     sonic.x = 0;
-    sonic.y = (WINDOW_HEIGHT - sonic.height) / 2;
+    sonic.y = get_vertical_center_offset(&sonic);
     sonic.speed = SONIC_SPEED;
     sonic.current_frame = SONIC_CURRENT_FRAME;
     sonic.collision_state = COLLISION_NONE;

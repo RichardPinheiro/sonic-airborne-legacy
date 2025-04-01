@@ -51,7 +51,7 @@ Sprite initialize_buzz(Frames frames) {
     buzz.width = frames.widths[0];
     buzz.height = frames.heights[0];
     buzz.x = WINDOW_WIDTH;
-    buzz.y = set_random_y_position(&buzz);
+    buzz.y = get_random_y_position(&buzz);
     buzz.speed = BUZZ_SPEED;
     buzz.current_frame = BUZZ_CURRENT_FRAME;
     buzz.collision_state = COLLISION_NONE;

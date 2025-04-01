@@ -55,7 +55,7 @@ Sprite initialize_ring(Frames frames) {
     ring.width = frames.widths[0];
     ring.height = frames.heights[0];
     ring.x = WINDOW_WIDTH;
-    ring.y = set_random_y_position(&ring);
+    ring.y = get_random_y_position(&ring);
     ring.speed = RING_SPEED;
     ring.current_frame = RING_CURRENT_FRAME;
     ring.collision_state = COLLISION_NONE;

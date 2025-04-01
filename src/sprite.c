@@ -67,7 +67,7 @@ void sprite_motion(Sprite *sprite, Uint32 delta_time) {
     sprite->x += sprite->speed * get_time_scale_factor(delta_time);
     if (sprite->x + (scaled_width / 2) < 0) {
         sprite->x = WINDOW_WIDTH + (scaled_width / 2);
-        sprite->y = set_random_y_position(sprite);
+        sprite->y = get_random_y_position(sprite);
     }
     update_sprite_boundaries(sprite);
 }
@@ -105,9 +105,24 @@ void sprite_render(Sprite *sprite, SDL_Renderer* renderer) {
  * @param sprite Pointer to Sprite (uses base_width/base_height and scale)
  * @return Y-coordinate in safe range [half_height, WINDOW_HEIGHT - half_height]
  */
-int set_random_y_position(const Sprite* sprite) {
+int get_random_y_position(const Sprite* sprite) {
     const int half_height = (int)(sprite->height * sprite->scale) / 2;
     return half_height + rand() % (WINDOW_HEIGHT - 2 * half_height);
+}
+
+/**
+ * @brief Calculates the vertical center position for a sprite.
+ *
+ * This function computes the vertical offset needed to center a sprite within the window.
+ * It determines half of the sprite's scaled height (accounting for its scale factor) and
+ * then positions it so that its center aligns with the vertical center of the window.
+ *
+ * @param sprite A pointer to the Sprite structure containing the sprite's height and scale factor.
+ * @return The vertical position offset required to center the sprite in the window.
+ */
+float get_vertical_center_offset(const Sprite* sprite) {
+    const float half_height = (sprite->height * sprite->scale) / 2.0f;
+    return (WINDOW_HEIGHT - half_height) / 2.0f;
 }
 
 /**

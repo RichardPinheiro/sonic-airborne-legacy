@@ -53,7 +53,7 @@ Sprite initialize_life(Frames frames) {
     life.width = frames.widths[0];
     life.height = frames.heights[0];
     life.x = WINDOW_WIDTH;
-    life.y = set_random_y_position(&life);
+    life.y = get_random_y_position(&life);
     life.speed = LIFE_SPEED;
     life.current_frame = LIFE_CURRENT_FRAME;
     life.collision_state = COLLISION_NONE;
