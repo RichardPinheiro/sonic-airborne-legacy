@@ -123,7 +123,7 @@ int main(void) {
         update_collision_states(&sonic, sprites, sprites_length);
         handle_collisions(&sonic, sprites, sprites_length);
 
-        events_listener(&global_queue);
+        event_listener(&global_queue);
 
         SDL_RenderClear(renderer); // Clear the screen
         SDL_RenderCopy(renderer, background, NULL, NULL); // Render the background

@@ -5,7 +5,7 @@ void initialize_event_queue(void) {
     global_queue.tail = 0;
 }
 
-void events_listener(EventQueue* queue) {
+void event_listener(EventQueue* queue) {
     while(!is_queue_empty(queue)) {
         GameEvent event = dequeue_event(queue);
         switch(event.type) {
