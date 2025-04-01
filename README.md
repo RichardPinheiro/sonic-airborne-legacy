@@ -1,6 +1,6 @@
 # Sonic Airborne Legacy 🚀
 
-[![Project Status](https://img.shields.io/badge/STATUS-IN%20PROGRESS-yellow)](https://github.com/RichardPinheiro/sonic-airborne-legacy/tree/develop)  
+[![Project Status](https://img.shields.io/badge/STATUS-IN%20PROGRESS-blue)](https://github.com/RichardPinheiro/sonic-airborne-legacy/tree/develop)  
 
 *Core mechanics (collision, events) in development*
 
