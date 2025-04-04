@@ -1,6 +1,7 @@
 #include "game.h"
 
 EventQueue global_queue;
+GameOverRenderState game_over_render_state;
 
 int main(void) {
     initialize_event_queue();
@@ -72,6 +73,18 @@ int main(void) {
         return EXIT_FAILURE;
     }
 
+    game_over_render_state.texture = IMG_LoadTexture(renderer, "assets/images/game_over.png");
+    if (!game_over_render_state.texture) {
+        fprintf(stderr, "Game Over texture loading failed: %s\n", IMG_GetError());
+        return EXIT_FAILURE;
+    }
+    SDL_QueryTexture(
+        game_over_render_state.texture,
+        NULL, NULL,
+        &game_over_render_state.width,
+        &game_over_render_state.height
+    );
+
     Sprite sonic = create_sonic(renderer);
     Sprite ring = create_ring(renderer);
     Sprite life = create_life(renderer);
@@ -133,6 +146,16 @@ int main(void) {
         sprite_render(&life, renderer);
         sprite_render(&buzz, renderer);
 
+        if(game_over_render_state.is_active) {
+            SDL_Rect game_over_rect = {
+                .x = (WINDOW_WIDTH - game_over_render_state.width) / 2,
+                .y = (int)game_over_render_state.y,
+                .w = game_over_render_state.width,
+                .h = game_over_render_state.height
+            };
+            SDL_RenderCopy(renderer, game_over_render_state.texture, NULL, &game_over_rect);
+        }
+
         SDL_RenderPresent(renderer); // Update the display
         last_frame_time = current_time; // Update timing for next frame
     }
@@ -143,6 +166,8 @@ int main(void) {
     free_sprite_frames(&life);
     free_sprite_frames(&buzz);
     SDL_DestroyTexture(background);
+    SDL_DestroyTexture(game_over_render_state.texture);
+    game_over_render_state.texture = NULL;
     audio_cleanup();
     Mix_CloseAudio();
     Mix_Quit();

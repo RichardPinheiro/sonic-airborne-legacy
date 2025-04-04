@@ -171,19 +171,19 @@ void update_position(Sprite *sonic, float time_scale_factor) {
 }
 
 /**
- * @brief Clamps the sprite within window boundaries considering scaled size and centered position.
+ * @brief Clamps the sonic sprite within window boundaries considering scaled size and centered position.
  *
- * This function ensures the sprite's *center* stays within the visible area while
+ * This function ensures the sonic sprite's *center* stays within the visible area while
  * accounting for its scaled dimensions. Uses half-width/height to prevent edges
  * from going out of bounds. It also calculates scaled half-dimensions to apply on
  * X-axis: Keep center between [half_width, WINDOW_WIDTH - half_width],
  * Y-axis: Keep center between [half_height, WINDOW_HEIGHT - half_height].
  *
- * @param sprite Sprite to clamp (modifies x/y)
+ * @param sonic Sprite to clamp (modifies x/y)
  */
-void check_boundary(Sprite *sprite) {
-    const float half_width = (sprite->width * sprite->scale) / 2;
-    const float half_height = (sprite->height * sprite->scale) / 2;
-    sprite->x = fmaxf(half_width, fminf(sprite->x, WINDOW_WIDTH - half_width));
-    sprite->y = fmaxf(half_height, fminf(sprite->y, WINDOW_HEIGHT - half_height));
+void check_boundary(Sprite *sonic) {
+    const float half_width = (sonic->width * sonic->scale) / 2;
+    const float half_height = (sonic->height * sonic->scale) / 2;
+    sonic->x = fmaxf(half_width, fminf(sonic->x, WINDOW_WIDTH - half_width));
+    sonic->y = fmaxf(half_height, fminf(sonic->y, WINDOW_HEIGHT - half_height));
 }

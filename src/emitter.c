@@ -90,11 +90,46 @@ EmitterResult emit_music(AudioID music_id, bool loop) {
  *
  * @return EmitterResult indicating the success of the event emission.
  */
-EmitterResult emit_game_over(void) {
-    GameEvent game_over_event = {
-        .type = EVENT_GAME_OVER
+EmitterResult emit_game_over_start(void) {
+    GameEvent game_over_start_event = {
+        .type = EVENT_GAME_OVER_START,
     };
-    emit_event(game_over_event);
+    emit_event(game_over_start_event);
+    return EMITTER_SUCCESS;
+}
+
+EmitterResult emit_game_over_animation(GameOverAnimation animation) {
+    GameEvent game_over_animation_event = {
+        .type = EVENT_GAME_OVER_ANIMATION,
+        .payload.game_over.animation = animation
+    };
+    emit_event(game_over_animation_event);
+    return EMITTER_SUCCESS;
+}
+
+EmitterResult emit_game_over_complete(void) {
+    GameEvent game_over_complete_event = {
+        .type = EVENT_GAME_OVER_COMPLETE
+    };
+    emit_event(game_over_complete_event);
+    return EMITTER_SUCCESS;
+}
+
+EmitterResult emit_delay(void) {
+    GameEvent delay_event = {
+        .type = EVENT_DELAYED_RESET,
+        .timestamp = SDL_GetTicks() + 3000 // 3 second delay
+    };
+    emit_event(delay_event);
+    return EMITTER_SUCCESS;
+}
+
+EmitterResult emit_game_reset(void) {
+    GameEvent game_reset_event = {
+        .type = EVENT_GAME_RESET,
+        .timestamp = SDL_GetTicks()
+    };
+    emit_event(game_reset_event);
     return EMITTER_SUCCESS;
 }
 
