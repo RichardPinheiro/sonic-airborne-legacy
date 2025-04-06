@@ -25,7 +25,6 @@ Sprite create_game_over(SDL_Renderer* renderer) {
         exit(EXIT_FAILURE);
     }
     load_texture(&frames, renderer);
-    printf("After load_texture: %d\n", frames.widths[0]);
     return initialize_game_over(frames);
 }
 

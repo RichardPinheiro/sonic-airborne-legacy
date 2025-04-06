@@ -109,7 +109,7 @@ AudioID get_collision_sound(SpriteType type) {
  * @brief Cleans up and frees all loaded audio assets.
  *
  * This function is responsible for freeing all loaded audio assets, both music and sound effects,
- * from the audio registry array. It first emits a stop_audio event to ensure that no audio is playing
+ * from the audio registry array. It first stop the audio to ensure that no audio is playing
  * before proceeding with the cleanup process. Then, it iterates through the audio registry array,
  * checking the type of each audio asset (music or sound effect) and freeing the corresponding SDL_mixer
  * resource. After freeing the resource, it sets the pointer to NULL to prevent any dangling pointers.
@@ -119,7 +119,7 @@ AudioID get_collision_sound(SpriteType type) {
  * @return void This function does not return any value.
  */
 void audio_cleanup(void) {
-    emit_stop_audio();
+    stop_audio();
     for(int i = 0; i < AUDIO_COUNT; i++) {
         if(audio_registry[i].is_music) {
             if(audio_registry[i].music) {
