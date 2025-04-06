@@ -50,13 +50,13 @@ Sprite initialize_life(Frames frames) {
     life.effects.effect_type = LIFE_EFFECT;
     life.effects.life_delta = LIFE_DELTA;
     life.scale = LIFE_ZOOM_SCALE;
-    life.width = frames.widths[0];
-    life.height = frames.heights[0];
+    life.collision_state = COLLISION_NONE;
+    life.width = frames.widths[life.collision_state];
+    life.height = frames.heights[life.collision_state];
     life.x = WINDOW_WIDTH;
     life.y = get_random_y_position(&life);
     life.speed = LIFE_SPEED;
     life.current_frame = LIFE_CURRENT_FRAME;
-    life.collision_state = COLLISION_NONE;
     life.animation_accumulator = 0;
     life.frames = frames;
     return life;

@@ -23,7 +23,8 @@ typedef enum {
     FLAME,
     PARROT,
     RING,
-    LIFE
+    LIFE,
+    GAME_OVER
 } SpriteType;
 
 typedef enum {
@@ -48,11 +49,10 @@ typedef struct {
 
 
 typedef struct Sprite {
-    float x, y, scale;
+    float x, y, target_y;
     int width, height;
-    int life;
-    int rings;
-    float speed;
+    int life, rings;
+    float scale, speed;
     float velocity_x, velocity_y;
     float acceleration, friction;
     float hover_amplitude, hover_frequency;

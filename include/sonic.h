@@ -5,6 +5,7 @@
 
 #define SONIC_FRAME_DELAY 100
 #define SONIC_CURRENT_FRAME 0
+#define SONIC_INITIAL_X 0
 #define SONIC_SPEED 0
 #define SONIC_LIFE 5
 #define SONIC_RINGS 0
@@ -12,7 +13,7 @@
 
 Sprite create_sonic(SDL_Renderer* renderer);
 Sprite initialize_sonic(Frames frames);
-void sonic_motion(Sprite *sonic, Uint32 delta_time, const Uint8 *keystates);
+void sonic_motion(Sprite *sonic, Uint32 delta_time);
 void watch_player_interactions(Sprite *sonic, const Uint8 *keystates);
 void apply_hover_effect(Sprite *sonic);
 bool is_arrow_pressed(const Uint8 *keystates);

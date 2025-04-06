@@ -49,12 +49,12 @@ Sprite initialize_sonic(Frames frames) {
     sonic.life = SONIC_LIFE;
     sonic.rings = SONIC_RINGS;
     sonic.scale = SONIC_ZOOM_SCALE;
-    sonic.width = frames.widths[0];
-    sonic.height = frames.heights[0];
-    sonic.x = 0;
+    sonic.current_frame = SONIC_CURRENT_FRAME;
+    sonic.width = frames.widths[sonic.current_frame];
+    sonic.height = frames.heights[sonic.current_frame];
+    sonic.x = SONIC_INITIAL_X;
     sonic.y = get_vertical_center_offset(&sonic);
     sonic.speed = SONIC_SPEED;
-    sonic.current_frame = SONIC_CURRENT_FRAME;
     sonic.collision_state = COLLISION_NONE;
     sonic.hover_amplitude = 1.5f;
     sonic.hover_frequency = 0.006f;
@@ -76,9 +76,9 @@ Sprite initialize_sonic(Frames frames) {
  *
  * @param sonic A pointer to the Sprite structure representing Sonic.
  * @param delta_time The time elapsed since the last frame, used to scale motion.
- * @param keystates The SDL keyboard state array. Used to detect arrow key presses.
  */
-void sonic_motion(Sprite *sonic, Uint32 delta_time, const Uint8 *keystates) {
+void sonic_motion(Sprite *sonic, Uint32 delta_time) {
+    const Uint8 *keystates = SDL_GetKeyboardState(NULL);
     float time_scale_factor = get_time_scale_factor(delta_time);
     watch_player_interactions(sonic, keystates);
     apply_friction(sonic, time_scale_factor);

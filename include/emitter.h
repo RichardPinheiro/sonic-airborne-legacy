@@ -11,11 +11,8 @@ EmitterResult emit_life_change(Sprite* source, Sprite* target);
 EmitterResult emit_rings_change(Sprite* source, Sprite* target);
 EmitterResult emit_sfx(AudioID sfx_id);
 EmitterResult emit_music(AudioID music_id, bool loop);
+EmitterResult emit_stop_audio(void);
 EmitterResult emit_game_over_start(void);
-EmitterResult emit_game_over_animation(GameOverAnimation animation);
-EmitterResult emit_game_over_complete(void);
-EmitterResult emit_delay(void);
-EmitterResult emit_game_reset(void);
 void emit_event(GameEvent event);
 
 #endif

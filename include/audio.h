@@ -22,7 +22,7 @@ typedef struct {
 void audio_initialization(void);
 void play_sound(AudioID id);
 void play_music(AudioID id, bool loop);
-void stop_music(void);
+void stop_audio(void);
 void set_volume(int volume);
 AudioID get_collision_sound(SpriteType type);
 void audio_cleanup(void);

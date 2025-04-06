@@ -13,6 +13,7 @@
 #include "sonic.h"
 #include "ring.h"
 #include "life.h"
+#include "game_over.h"
 #include "audio.h"
 #include "events.h"
 #include "emitter.h"

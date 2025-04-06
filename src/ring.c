@@ -52,12 +52,12 @@ Sprite initialize_ring(Frames frames) {
     ring.effects.effect_type = RING_EFFECT;
     ring.effects.ring_delta = RING_DELTA;
     ring.scale = RING_ZOOM_SCALE;
-    ring.width = frames.widths[0];
-    ring.height = frames.heights[0];
+    ring.current_frame = RING_CURRENT_FRAME;
+    ring.width = frames.widths[ring.current_frame];
+    ring.height = frames.heights[ring.current_frame];
     ring.x = WINDOW_WIDTH;
     ring.y = get_random_y_position(&ring);
     ring.speed = RING_SPEED;
-    ring.current_frame = RING_CURRENT_FRAME;
     ring.collision_state = COLLISION_NONE;
     ring.animation_accumulator = 0;
     ring.frames = frames;

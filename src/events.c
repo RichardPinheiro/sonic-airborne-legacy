@@ -1,10 +1,28 @@
 #include "game.h"
 
+/**
+ * @brief Initializes the event queue by setting the head and tail pointers to 0.
+ *
+ * This function initializes the event queue by setting the head and tail pointers to 0.
+ * The queue is initially empty, and the head and tail pointers are used to enqueue and
+ * dequeue events.
+ *
+ * @return void
+ */
 void initialize_event_queue(void) {
     global_queue.head = 0;
     global_queue.tail = 0;
 }
 
+/**
+ * @brief Listens for and processes events in the event queue.
+ *
+ * This function continuously checks the event queue for new events. When an event is found,
+ * it is dequeued and processed based on its type. The function handles different event types
+ * by calling the appropriate event handler functions.
+ *
+ * @param queue A pointer to the EventQueue where events are stored and processed.
+ */
 void event_listener(EventQueue* queue) {
     while(!is_queue_empty(queue)) {
         GameEvent event = dequeue_event(queue);
@@ -13,11 +31,8 @@ void event_listener(EventQueue* queue) {
             case EVENT_RINGS_CHANGED: handle_rings_event(event); break;
             case EVENT_SOUND_EFFECT: handle_sfx_event(event); break;
             case EVENT_MUSIC_PLAY: handle_music_event(event); break;
-            case EVENT_GAME_OVER_START: handle_game_over_start_event(event); break;
-            case EVENT_GAME_OVER_ANIMATION: handle_game_over_animation_event(event); break;
-            case EVENT_GAME_OVER_COMPLETE: handle_game_over_complete_event(event); break;
-            case EVENT_GAME_RESET: handle_game_reset_event(event); break;
-            case EVENT_DELAYED_RESET: handle_delayed_reset_event(event); break;
+            case EVENT_STOP_AUDIO: handle_stop_audio_event(); break;
+            case EVENT_GAME_OVER: handle_game_over_event(); break;
         }
     }
 }
@@ -54,10 +69,30 @@ GameEvent dequeue_event(EventQueue* queue) {
     return event;
 }
 
+/**
+ * @brief Checks if the event queue is empty.
+ *
+ * This function checks if the event queue is empty by comparing the head and tail pointers.
+ * If the head and tail pointers are equal, it means the queue is empty.
+ *
+ * @param queue A pointer to the EventQueue to be checked.
+ * @return true if the event queue is empty, false otherwise.
+ */
 bool is_queue_empty(const EventQueue* queue) {
     return queue->head == queue->tail;
 }
 
+/**
+ * @brief Handles sound effect events based on the event's payload.
+ *
+ * This function processes sound effect events by checking the event's payload and
+ * playing the corresponding sound effect using the `play_sound` function.
+ *
+ * @param event The GameEvent containing the sound effect information.
+ * @param event.payload.sfx.id The identifier of the sound effect to be played.
+ *
+ * @return void
+ */
 void handle_sfx_event(GameEvent event) {
     switch(event.payload.sfx.id) {
         case SFX_COLLISION_BUZZ:
@@ -72,6 +107,18 @@ void handle_sfx_event(GameEvent event) {
     }
 }
 
+/**
+ * @brief Handles music event based on the event's payload.
+ *
+ * This function processes music events by checking the event's payload and
+ * playing the corresponding music using the `play_music` function.
+ *
+ * @param event The GameEvent containing the music information.
+ * @param event.payload.music.id The identifier of the music to be played.
+ * @param event.payload.music.loop A boolean indicating whether the music should loop.
+ *
+ * @return void
+ */
 void handle_music_event(GameEvent event) {
     switch(event.payload.music.id) {
         case MUSIC_STAGE_1:
@@ -81,6 +128,20 @@ void handle_music_event(GameEvent event) {
             play_music(event.payload.music.id, event.payload.music.loop);
             break;
     }
+}
+
+/**
+ * @brief Handles the stop audio event by calling the stop_audio function.
+ *
+ * This function is responsible for stopping any currently playing audio.
+ * It calls the stop_audio function to achieve this.
+ *
+ * @return void
+ *
+ * @see stop_audio
+ */
+void handle_stop_audio_event(void) {
+    stop_audio();
 }
 
 void handle_background_events(GameEvent event) {
@@ -93,6 +154,23 @@ void handle_background_events(GameEvent event) {
     }
 }
 
+/**
+ * @brief Handles life-related events, updating the target sprite's life.
+ *
+ * This function processes life-related events by updating the target
+ * sprite's life based on the life delta value from the source sprite's effects.
+ * The life value is clamped to a minimum of 0. If the target sprite's
+ * life drops to or below 0, the game over start event is emitted.
+ *
+ * @param event The GameEvent containing the collision information and source/target sprites.
+ * @param event.payload.collision.source A pointer to the source sprite involved in the collision.
+ * @param event.payload.collision.target A pointer to the target sprite involved in the collision.
+ * @param event.payload.collision.source->effects.life_delta The life delta value to be applied to the target sprite's life.
+ *
+ * @return void
+ *
+ * @see emit_game_over_start
+ */
 void handle_life_event(GameEvent event) {
     Sprite* source = event.payload.collision.source;
     Sprite* target = event.payload.collision.target;
@@ -100,58 +178,41 @@ void handle_life_event(GameEvent event) {
     if (target->life <= 0) emit_game_over_start();
 }
 
+/**
+ * @brief Handles ring-related events, updating the target sprite's rings.
+ *
+ * This function processes ring-related events by updating the target sprite's rings based on the ring delta
+ * value from the source sprite's effects. The rings value is clamped to a minimum of 0.
+ *
+ * @param event The GameEvent containing the collision information and source/target sprites.
+ * @param event.payload.collision.source A pointer to the source sprite involved in the collision.
+ * @param event.payload.collision.target A pointer to the target sprite involved in the collision.
+ * @param event.payload.collision.source->effects.ring_delta The ring delta value to be applied to the target sprite's rings.
+ *
+ * @return void
+ */
 void handle_rings_event(GameEvent event) {
     Sprite* source = event.payload.collision.source;
     Sprite* target = event.payload.collision.target;
     target->rings = MAX(target->rings + source->effects.ring_delta, 0);
 }
 
-void handle_game_over_start_event(GameEvent event) {
-    GameOverAnimation animation = {
-        .current_y = WINDOW_HEIGHT,
-        .target_y = GAME_OVER_TARGET_Y_POS,
-        .speed = GAME_OVER_ANIM_SPEED,
-        .last_update = SDL_GetTicks()
-    };
-    emit_game_over_animation(animation);
+/**
+ * @brief Handles the game over start event by setting the game over state
+ *        and emitting stop audio and game over music events.
+ *
+ * This function is responsible for setting the game over state to active,
+ * emitting a stop audio event to stop any currently playing audio,
+ * and emitting a game over music event to play the game over music.
+ *
+ * @return void
+ *
+ * @see emit_stop_audio
+ * @see emit_music
+ * @see game_over_state
+ */
+void handle_game_over_event(void) {
+    game_over_state.is_active = true;
+    emit_stop_audio();
     emit_music(MUSIC_GAME_OVER, false);
-}
-
-void handle_game_over_animation_event(GameEvent event) {
-    GameOverAnimation animation = event.payload.game_over.animation;
-    if(animation.current_y <= animation.target_y) {
-        emit_game_over_complete();
-        return;
-    }
-    Uint32 now = SDL_GetTicks();
-    Uint32 delta_time = now - animation.last_update;
-    float time_scale_factor = get_time_scale_factor(delta_time);
-
-    animation.current_y -= animation.speed * time_scale_factor;
-    animation.last_update = now;
-
-    game_over_render_state.y = animation.current_y;
-    game_over_render_state.is_active = true;
-
-    emit_game_over_animation(animation);
-}
-
-void handle_game_over_complete_event(GameEvent event) {
-    GameOverAnimation animation = event.payload.game_over.animation;
-    game_over_render_state.y = animation.target_y;
-    game_over_render_state.is_active = true;
-    emit_delay();
-}
-
-void handle_delayed_reset_event(GameEvent event) {
-    if(SDL_GetTicks() >= event.timestamp) {
-        emit_game_reset();
-    } else {
-        queue_event(&global_queue, event); // Requeue until ready
-    }
-}
-
-void handle_game_reset_event(GameEvent event) {
-    game_over_render_state.is_active = false;
-    game_over_render_state.y = WINDOW_HEIGHT;
 }

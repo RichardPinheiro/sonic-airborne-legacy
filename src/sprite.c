@@ -246,6 +246,16 @@ void handle_collisions(Sprite *sonic, Sprite **sprites, size_t sprites_length) {
     }
 }
 
+/**
+ * @brief Handles collision events when a sprite enters the collision zone of the player.
+ *
+ * This function checks the type of effect associated with the sprite and applies the corresponding
+ * action based on the effect type. The function supports three types of effects: DAMAGE_EFFECT,
+ * RING_EFFECT, and LIFE_EFFECT.
+ *
+ * @param sprite Pointer to the sprite that has entered the collision zone.
+ * @param sonic Pointer to the player's sprite.
+ */
 void handle_collision_enter(Sprite *sprite, Sprite *sonic) {
     switch (sprite->effects.effect_type) {
         case DAMAGE_EFFECT: apply_penalties(sprite, sonic); break;
@@ -259,22 +269,66 @@ void handle_collision_stay(Sprite *sprite, Sprite *sonic) {
     //     sprite->collision_state, sonic->collision_state);
 }
 
+/**
+ * @brief Handles collision events when a sprite exits the collision zone of the player.
+ *
+ * This function resets the collision state of both the sprite and the player to COLLISION_NONE.
+ * It is called when the sprite's collision zone no longer intersects with the player's collision zone.
+ *
+ * @param sprite Pointer to the sprite that has exited the collision zone.
+ * @param sonic Pointer to the player's sprite.
+ */
 void handle_collision_exit(Sprite *sprite, Sprite *sonic) {
     sprite->collision_state = COLLISION_NONE;
     sonic->collision_state = COLLISION_NONE;
 }
 
+/**
+ * @brief Applies penalties to the target sprite based on the source sprite's type.
+ *
+ * This function triggers life change, rings change, and sound effect emission when
+ * a source sprite of type DAMAGE_EFFECT collides with a target sprite.
+ *
+ * @param source Pointer to the sprite that has caused the penalty.
+ * @param target Pointer to the sprite receiving the penalty.
+ *
+ * @return void
+ */
 void apply_penalties(Sprite* source, Sprite* target) {
     emit_life_change(source, target);
     emit_rings_change(source, target);
     emit_sfx(get_collision_sound(source->type));
 }
 
+/**
+ * @brief Applies bonus effects to the target sprite based on the source sprite's type.
+ *
+ * This function triggers ring change and sound effect emission when a source sprite of type
+ * RING_EFFECT collides with a target sprite.
+ *
+ * @param source Pointer to the sprite that has caused the bonus effect.
+ *        This sprite should have a type of RING_EFFECT.
+ * @param target Pointer to the sprite receiving the bonus effect.
+ *
+ * @return void
+ */
 void apply_bonus(Sprite *source, Sprite *target) {
     emit_rings_change(source, target);
     emit_sfx(get_collision_sound(source->type));
 }
 
+/**
+ * @brief Applies life change effects to the target sprite based on the source sprite's type.
+ *
+ * This function triggers life change and sound effect emission when a source sprite of type
+ * LIFE_EFFECT collides with a target sprite.
+ *
+ * @param source Pointer to the sprite that has caused the life change effect.
+ *        This sprite should have a type of LIFE_EFFECT.
+ * @param target Pointer to the sprite receiving the life change effect.
+ *
+ * @return void
+ */
 void apply_Life(Sprite* source, Sprite* target) {
     emit_life_change(source, target);
     emit_sfx(get_collision_sound(source->type));

@@ -48,12 +48,12 @@ Sprite initialize_buzz(Frames frames) {
     buzz.effects.life_delta = BUZZ_LIFE_DELTA;
     buzz.effects.ring_delta = BUZZ_RING_DELTA;
     buzz.scale = BUZZ_ZOOM_SCALE;
-    buzz.width = frames.widths[0];
-    buzz.height = frames.heights[0];
+    buzz.current_frame = BUZZ_CURRENT_FRAME;
+    buzz.width = frames.widths[buzz.current_frame];
+    buzz.height = frames.heights[buzz.current_frame];
     buzz.x = WINDOW_WIDTH;
     buzz.y = get_random_y_position(&buzz);
     buzz.speed = BUZZ_SPEED;
-    buzz.current_frame = BUZZ_CURRENT_FRAME;
     buzz.collision_state = COLLISION_NONE;
     buzz.animation_accumulator = 0;
     buzz.frames = frames;
